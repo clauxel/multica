@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://multca.app/sitemap.xml
+Sitemap: https://multica.uk/sitemap.xml

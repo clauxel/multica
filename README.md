@@ -2,10 +2,10 @@
 
 **Multica is a cloud AI agent workspace for real development work.**
 
-[Visit multca.app](https://multca.app)  
-[Read the definition page](https://multca.app/definition.html)  
-[Browse workflow scenarios](https://multca.app/scenarios.html)  
-[See pricing](https://multca.app/pricing.html)
+[Visit multica.uk](https://multica.uk)  
+[Read the definition page](https://multica.uk/definition.html)  
+[Browse workflow scenarios](https://multica.uk/scenarios.html)  
+[See pricing](https://multica.uk/pricing.html)
 
 ## What Is Multica?
 
@@ -61,15 +61,15 @@ That difference matters. Real development work is usually not blocked by a lack 
 - Pro: `$29/month`
 - Team: `$99/month`
 
-Full pricing: [multca.app/pricing.html](https://multca.app/pricing.html)
+Full pricing: [multica.uk/pricing.html](https://multica.uk/pricing.html)
 
 ## Pages Built For SEO + GEO
 
-- [Home](https://multca.app): core product positioning and conversion entry point
-- [Definition](https://multca.app/definition.html): what a cloud AI agent workspace means
-- [Scenarios](https://multca.app/scenarios.html): workflow examples for real development tasks
-- [Pricing](https://multca.app/pricing.html): package comparison and buying path
-- [Blog](https://multca.app/blog.html): explanatory content for SEO and GEO expansion
+- [Home](https://multica.uk): core product positioning and conversion entry point
+- [Definition](https://multica.uk/definition.html): what a cloud AI agent workspace means
+- [Scenarios](https://multica.uk/scenarios.html): workflow examples for real development tasks
+- [Pricing](https://multica.uk/pricing.html): package comparison and buying path
+- [Blog](https://multica.uk/blog.html): explanatory content for SEO and GEO expansion
 
 ## FAQ
 
@@ -103,5 +103,5 @@ It supports:
 
 ## Start Here
 
-Visit [multca.app](https://multca.app).
+Visit [multica.uk](https://multica.uk).
 
