@@ -1,0 +1,5 @@
+site/server.log
+site/server.err.log
+__pycache__/
+.DS_Store
+Thumbs.db

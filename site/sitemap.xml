@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>./index.html</loc></url>
+  <url><loc>./scenarios.html</loc></url>
+  <url><loc>./definition.html</loc></url>
+  <url><loc>./pricing.html</loc></url>
+  <url><loc>./blog.html</loc></url>
+  <url><loc>./blog-why-cloud-agent-workspace.html</loc></url>
+  <url><loc>./blog-from-prompts-to-task-flow.html</loc></url>
+  <url><loc>./blog-solo-dev-agent-routines.html</loc></url>
+</urlset>

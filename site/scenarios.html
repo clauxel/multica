@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multica Scenarios | How solo devs and small teams use AI agents</title>
+    <meta
+      name="description"
+      content="Explore Multica scenarios for solo developers and small teams. See how cloud AI agents can help with bug fixing, test coverage, documentation, refactors, and launch prep."
+    />
+    <link rel="icon" href="assets/multica-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="scenarios">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="container site-header__inner">
+          <a class="brand" href="index.html">
+            <img class="brand__mark" src="assets/multica-mark.svg" alt="Multica" />
+            <div>
+              <div class="brand__name">Multica</div>
+              <div class="brand__sub">Scenario library</div>
+            </div>
+          </a>
+          <nav class="site-nav" aria-label="Main navigation">
+            <a href="index.html" data-nav="home">Home</a>
+            <a href="scenarios.html" data-nav="scenarios">Scenarios</a>
+            <a href="definition.html" data-nav="definition">Definition</a>
+            <a href="pricing.html" data-nav="pricing">Pricing</a>
+            <a href="blog.html" data-nav="blog">Blog</a>
+          </nav>
+          <div class="site-actions">
+            <a class="btn btn--ghost btn--small" href="blog.html">Read content</a>
+            <a class="btn btn--primary btn--small" href="signup.html">Start 7-day trial</a>
+            <button class="menu-toggle" data-menu-toggle aria-label="Open menu">☰</button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="page-hero">
+          <div class="container page-hero__grid">
+            <div>
+              <span class="eyebrow">Use-case library</span>
+              <h1>Make it easy for visitors to see themselves in the product.</h1>
+              <p class="page-hero__lede">
+                Strong SaaS sites do not stop at abstract capability language. They show concrete workflows. These use
+                cases map directly to the daily work of solo developers and small teams: bug fixing, tests, docs,
+                refactors, release prep, and shared skills.
+              </p>
+            </div>
+            <div class="metric-strip">
+              <div class="panel-title">content goal</div>
+              <strong>SEO + GEO</strong>
+              <span>Scenario pages support conversion and also create durable search and answer-engine entry points.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="container">
+            <div class="scenario-toolbar">
+              <div class="filter-row">
+                <button class="filter-chip is-active" data-filter="all">All</button>
+                <button class="filter-chip" data-filter="solo">Solo dev</button>
+                <button class="filter-chip" data-filter="team">Small team</button>
+                <button class="filter-chip" data-filter="bug">Bug fixes</button>
+                <button class="filter-chip" data-filter="tests">Tests</button>
+                <button class="filter-chip" data-filter="docs">Docs</button>
+                <button class="filter-chip" data-filter="refactor">Refactor</button>
+              </div>
+              <label class="search-box" aria-label="Search scenarios">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <path d="M20 20L17 17"></path>
+                </svg>
+                <input
+                  type="search"
+                  placeholder="Search scenarios, tasks, or team types"
+                  data-scenario-search
+                />
+              </label>
+            </div>
+
+            <p class="muted mono" data-scenario-count>8 scenarios</p>
+
+            <div class="scenario-grid">
+              <article class="scenario-card" data-scenario-card data-category="solo bug" data-keywords="solo developer bug fixing launch prep ui issues release checklist">
+                <div class="blog-meta"><span>launch ready</span><span>SOLO · BUG</span></div>
+                <h3>Clear launch blockers before release day</h3>
+                <p>Bundle broken states, copy fixes, UI issues, and last-mile regressions into one launch-ready task stream.</p>
+                <ul>
+                  <li>Useful for release-week cleanup</li>
+                  <li>Reduces chaotic last-minute switching</li>
+                  <li>Pairs well with launch checklists</li>
+                </ul>
+                <div class="scenario-card__chips"><span>Bug triage</span><span>Launch prep</span><span>UI fixes</span></div>
+              </article>
+
+              <article class="scenario-card" data-scenario-card data-category="solo tests" data-keywords="solo developer tests coverage regression edge cases unit tests">
+                <div class="blog-meta"><span>high leverage</span><span>SOLO · TESTS</span></div>
+                <h3>Fill in missing test coverage</h3>
+                <p>Use agents to strengthen fragile features with edge-case coverage, regression checks, and safer defaults.</p>
+                <ul>
+                  <li>Useful for older projects with sparse tests</li>
+                  <li>Useful before a release push</li>
+                  <li>Reduces mental load for solo builders</li>
+                </ul>
+                <div class="scenario-card__chips"><span>Coverage</span><span>Regression</span><span>Edge cases</span></div>
+              </article>
+
+              <article class="scenario-card" data-scenario-card data-category="solo docs" data-keywords="solo developer docs readme changelog faq launch notes content">
+                <div class="blog-meta"><span>content ready</span><span>SOLO · DOCS</span></div>
+                <h3>Keep docs, release notes, and FAQs current</h3>
+                <p>Push README updates, product notes, changelogs, and usage docs forward instead of leaving them behind every sprint.</p>
+                <ul>
+                  <li>Reduces “the feature shipped but no one understands it” problems</li>
+                  <li>Supports launch communication</li>
+                  <li>Creates long-term SEO assets</li>
+                </ul>
+                <div class="scenario-card__chips"><span>README</span><span>Changelog</span><span>FAQ</span></div>
+              </article>
+
+              <article class="scenario-card" data-scenario-card data-category="solo refactor" data-keywords="solo developer refactor cleanup naming modules structure technical debt">
+                <div class="blog-meta"><span>steady cleanup</span><span>SOLO · REFACTOR</span></div>
+                <h3>Refactor in small visible steps</h3>
+                <p>Break naming cleanup, structural cleanup, and repeated logic extraction into trackable work instead of one risky rewrite.</p>
+                <ul>
+                  <li>Useful for shipping while paying down debt</li>
+                  <li>Useful for long-lived codebases</li>
+                  <li>Better for stable progress</li>
+                </ul>
+                <div class="scenario-card__chips"><span>Cleanup</span><span>Refactor</span><span>Naming</span></div>
+              </article>
+
+              <article class="scenario-card" data-scenario-card data-category="team bug" data-keywords="small team bugs shared queue triage review progress">
+                <div class="blog-meta"><span>team sync</span><span>TEAM · BUG</span></div>
+                <h3>Run a shared bug-fix queue</h3>
+                <p>Put task ownership, review flow, and execution history into one visible surface for the team.</p>
+                <ul>
+                  <li>Useful for parallel execution</li>
+                  <li>Reduces repeated status questions</li>
+                  <li>Keeps team rhythm more stable</li>
+                </ul>
+                <div class="scenario-card__chips"><span>Shared board</span><span>Priority</span><span>Review</span></div>
+              </article>
+
+              <article class="scenario-card" data-scenario-card data-category="team docs" data-keywords="small team docs skills onboarding standards launch notes shared knowledge">
+                <div class="blog-meta"><span>team memory</span><span>TEAM · DOCS</span></div>
+                <h3>Turn team practices into reusable skills</h3>
+                <p>Save checklists, launch steps, module notes, and handoff patterns so the next teammate can move faster.</p>
+                <ul>
+                  <li>Great for studios and small agencies</li>
+                  <li>Great for teams shipping quickly</li>
+                  <li>Reduces manual handoff cost</li>
+                </ul>
+                <div class="scenario-card__chips"><span>Skill</span><span>Onboarding</span><span>Ops notes</span></div>
+              </article>
+
+              <article class="scenario-card" data-scenario-card data-category="team tests" data-keywords="small team tests automation smoke checks release validation">
+                <div class="blog-meta"><span>quality loop</span><span>TEAM · TESTS</span></div>
+                <h3>Create a lightweight quality loop</h3>
+                <p>Use agents to support recurring validation work so releases depend less on one person remembering everything.</p>
+                <ul>
+                  <li>Useful for fast-moving teams</li>
+                  <li>Useful for reducing “I thought that was tested” moments</li>
+                  <li>Creates reusable validation templates</li>
+                </ul>
+                <div class="scenario-card__chips"><span>Smoke checks</span><span>Automation</span><span>Release loop</span></div>
+              </article>
+
+              <article class="scenario-card" data-scenario-card data-category="team refactor" data-keywords="small team refactor tech debt modules cleanup collaboration code quality">
+                <div class="blog-meta"><span>debt reduction</span><span>TEAM · REFACTOR</span></div>
+                <h3>Keep technical debt from growing unchecked</h3>
+                <p>Let the team decide direction, then let agents move the repetitive cleanup work forward in safe slices.</p>
+                <ul>
+                  <li>Useful for conservative progress</li>
+                  <li>Useful for multi-person handoff</li>
+                  <li>Useful for steady codebase improvement</li>
+                </ul>
+                <div class="scenario-card__chips"><span>Tech debt</span><span>Cleanup</span><span>Modules</span></div>
+              </article>
+            </div>
+
+            <div class="empty-state" data-empty>
+              No matching scenarios found. Try another keyword or switch back to `All`.
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <div class="footer-col">
+            <div class="brand">
+              <img class="brand__mark" src="assets/multica-mark.svg" alt="Multica" />
+              <div>
+                <div class="brand__name">Multica</div>
+                <div class="brand__sub">Cloud agent workspace</div>
+              </div>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h4>Navigate</h4>
+            <a href="index.html">Home</a>
+            <a href="pricing.html">Pricing</a>
+          </div>
+          <div class="footer-col">
+            <h4>Learn</h4>
+            <a href="definition.html">Definition</a>
+            <a href="blog.html">Blog</a>
+          </div>
+          <div class="footer-col">
+            <h4>Start</h4>
+            <a href="signup.html">Start 7-day trial</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
