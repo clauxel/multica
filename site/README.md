@@ -9,7 +9,7 @@ This is a standalone static marketing site that does not depend on the original 
 - `definition.html`: definition page
 - `pricing.html`: pricing page
 - `blog.html`: blog index
-- `signup.html`: trial entry page
+- `signup.html`: redirect bridge to Aigeamy with UTM tracking
 - `blog-why-cloud-agent-workspace.html`
 - `blog-from-prompts-to-task-flow.html`
 - `blog-solo-dev-agent-routines.html`
