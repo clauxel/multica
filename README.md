@@ -1,23 +1,23 @@
-# Multca
+﻿# Multica
 
-**Multca is a cloud AI agent workspace for real development work.**
+**Multica is a cloud AI agent workspace for real development work.**
 
 [Visit multca.app](https://multca.app)  
 [Read the definition page](https://multca.app/definition.html)  
 [Browse workflow scenarios](https://multca.app/scenarios.html)  
 [See pricing](https://multca.app/pricing.html)
 
-## What Is Multca?
+## What Is Multica?
 
-Multca is a cloud AI agent workspace that turns one-off AI coding sessions into a visible, reusable task flow.
+Multica is a cloud AI agent workspace that turns one-off AI coding sessions into a visible, reusable task flow.
 
-Instead of relying on temporary chat history, Multca gives development work a clearer structure: tasks can be created, tracked, reviewed, and reused inside one cloud workspace. That makes it easier to keep bug fixes, test coverage, documentation, release cleanup, and refactor work moving forward.
+Instead of relying on temporary chat history, Multica gives development work a clearer structure: tasks can be created, tracked, reviewed, and reused inside one cloud workspace. That makes it easier to keep bug fixes, test coverage, documentation, release cleanup, and refactor work moving forward.
 
 ## Why This Positioning Matters
 
 For SEO and GEO, clear concepts perform better than vague feature lists.
 
-Multca is intentionally framed around a stable definition:
+Multica is intentionally framed around a stable definition:
 
 - cloud AI agent workspace
 - AI development workspace
@@ -25,9 +25,9 @@ Multca is intentionally framed around a stable definition:
 - AI task flow for development work
 - reusable AI skills and workflows
 
-This definition-first structure makes Multca easier to understand, easier to reference, and easier to surface in both search engines and answer engines.
+This definition-first structure makes Multica easier to understand, easier to reference, and easier to surface in both search engines and answer engines.
 
-## What Multca Helps Organize
+## What Multica Helps Organize
 
 - Bug fixing and release cleanup
 - Test coverage and regression checks
@@ -35,25 +35,25 @@ This definition-first structure makes Multca easier to understand, easier to ref
 - Refactor work in smaller visible steps
 - Reusable operating patterns for recurring tasks
 
-## How Multca Works
+## How Multica Works
 
 1. Create a task instead of starting from a blank prompt.
 2. Run AI agents in the cloud instead of juggling scattered sessions.
 3. Track status, outputs, and recent progress in one place.
 4. Reuse what works as repeatable skills, templates, and workflows.
 
-## What Multca Is Not
+## What Multica Is Not
 
 - Not a one-shot chatbot
 - Not a heavy self-hosted infrastructure product
 - Not an enterprise governance suite
 - Not just model access without workflow structure
 
-## Why Multca Is Different
+## Why Multica Is Different
 
-Many AI coding products focus on answers. Multca focuses on workflow.
+Many AI coding products focus on answers. Multica focuses on workflow.
 
-That difference matters. Real development work is usually not blocked by a lack of raw output. It is blocked by scattered context, weak handoff, poor visibility, and workflows that disappear after one session. Multca is designed around keeping useful work in motion.
+That difference matters. Real development work is usually not blocked by a lack of raw output. It is blocked by scattered context, weak handoff, poor visibility, and workflows that disappear after one session. Multica is designed around keeping useful work in motion.
 
 ## Pricing Snapshot
 
@@ -73,17 +73,17 @@ Full pricing: [multca.app/pricing.html](https://multca.app/pricing.html)
 
 ## FAQ
 
-### What is Multca?
+### What is Multica?
 
-Multca is a cloud AI agent workspace that helps turn AI coding usage into a structured task flow.
+Multica is a cloud AI agent workspace that helps turn AI coding usage into a structured task flow.
 
-### Is Multca a chatbot?
+### Is Multica a chatbot?
 
-No. Multca is positioned as a workspace for ongoing execution, visibility, and reuse, not as a one-message chat interface.
+No. Multica is positioned as a workspace for ongoing execution, visibility, and reuse, not as a one-message chat interface.
 
-### What kind of work fits Multca best?
+### What kind of work fits Multica best?
 
-Multca fits recurring development workflows such as bug fixing, test coverage, docs updates, refactor cleanup, and release preparation.
+Multica fits recurring development workflows such as bug fixing, test coverage, docs updates, refactor cleanup, and release preparation.
 
 ### Why use the phrase "cloud AI agent workspace"?
 
@@ -91,7 +91,7 @@ Because it is clearer than vague AI product language. It gives search engines, a
 
 ## Repository Purpose
 
-This repository holds the public-facing marketing site and messaging assets for Multca.
+This repository holds the public-facing marketing site and messaging assets for Multica.
 
 It supports:
 
@@ -104,3 +104,4 @@ It supports:
 ## Start Here
 
 Visit [multca.app](https://multca.app).
+

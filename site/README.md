@@ -1,4 +1,4 @@
-# Multica SaaS Site
+﻿# Multica SaaS Site
 
 This is a standalone static marketing site that does not depend on the original `multica` repository code.
 
@@ -28,3 +28,4 @@ python -m http.server 8080
 Then visit:
 
 `http://localhost:8080`
+

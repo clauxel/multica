@@ -1,34 +1,107 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Multica | Cloud AI Agent Workspace</title>
+    <title>Multica | Cloud AI Agent Workspace for Development Work</title>
     <meta
       name="description"
-      content="Multica is a cloud AI agent workspace for solo developers and small teams. Keep bug fixes, test coverage, docs, and refactors moving in one lightweight workspace."
+      content="Multica is a cloud AI agent workspace that keeps bug fixes, tests, docs, and refactors moving in one visible task flow."
     />
-    <meta property="og:title" content="Multica | Cloud AI Agent Workspace" />
+    <link rel="canonical" href="https://multca.app/" />
+    <meta property="og:title" content="Multica | Cloud AI Agent Workspace for Development Work" />
     <meta
       property="og:description"
-      content="Keep your development tasks moving with cloud AI agents. Built for solo developers and small teams."
+      content="Keep bug fixes, tests, docs, and refactors moving in a visible cloud AI agent workflow."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://multca.app/" />
+    <meta property="og:site_name" content="Multica" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Multica | Cloud AI Agent Workspace for Development Work" />
+    <meta
+      name="twitter:description"
+      content="Keep bug fixes, tests, docs, and refactors moving in a visible cloud AI agent workflow."
+    />
     <link rel="icon" href="assets/multica-mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "Multica",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web",
-        "description": "A cloud AI agent workspace for solo developers and small teams.",
-        "offers": {
-          "@type": "Offer",
-          "price": "10",
-          "priceCurrency": "USD"
-        }
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://multca.app/#organization",
+            "name": "Multica",
+            "url": "https://multca.app/",
+            "logo": "https://multca.app/assets/multica-mark.svg"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://multca.app/#website",
+            "name": "Multica",
+            "url": "https://multca.app/",
+            "publisher": {
+              "@id": "https://multca.app/#organization"
+            }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://multca.app/#software",
+            "name": "Multica",
+            "url": "https://multca.app/",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web",
+            "description": "A cloud AI agent workspace for real development work.",
+            "publisher": {
+              "@id": "https://multca.app/#organization"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": "10",
+              "priceCurrency": "USD",
+              "url": "https://multca.app/pricing.html"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://multca.app/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Why not just use an IDE agent directly?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Once tasks start piling up, ad hoc chat loses structure. Multica gives tasks, progress, results, and reusable skills a shared home."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What kind of work fits best in Multica?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Multica fits recurring development workflows such as bug fixes, test coverage, documentation updates, release preparation, and refactor cleanup."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How is this different from a chat-only AI tool?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Chat tools answer one message at a time. Multica is built to hold tasks, status, outputs, and reusable workflows across ongoing work."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Why start at $10 per month?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Starter is priced to make the first paid step easy, so users can feel the value of continuous task flow before they need a larger plan."
+                }
+              }
+            ]
+          }
+        ]
       }
     </script>
   </head>
@@ -67,7 +140,7 @@
               <span class="eyebrow"><span class="status-dot"></span> Always-on cloud agent workspace</span>
               <h1>Keep cloud AI agents moving your development work forward.</h1>
               <p class="hero__lede">
-                Multica turns scattered AI coding sessions into a durable task flow for solo developers and small teams.
+                Multica turns scattered AI coding sessions into a durable task flow for ongoing development work.
                 Create tasks, assign them to agents, track progress, and reuse skills inside one lightweight workspace
                 instead of juggling temporary prompts across multiple chat windows.
               </p>
@@ -78,7 +151,7 @@
               <div class="hero__proof">
                 <span class="chip">Instant cloud access</span>
                 <span class="chip">Starter from $10 / month</span>
-                <span class="chip">Built for solo devs and 2-10 person teams</span>
+                <span class="chip">Built for repeatable development workflows</span>
                 <span class="chip">Bug fixes, tests, docs, and refactors</span>
               </div>
             </div>
@@ -114,7 +187,7 @@
                 <div class="signal-screen"></div>
               </div>
               <div class="panel-copy">
-                <div class="panel-title">MULTICA RUNTIME VIEW</div>
+                <div class="panel-title">MULTCA RUNTIME VIEW</div>
                 <h3>Stop treating AI like a one-shot chat box.</h3>
                 <p>
                   For solo developers, it should feel like a workspace that keeps work moving. For small teams, it should
@@ -403,7 +476,7 @@
               <h2>A definition page is not filler. It is SEO and GEO infrastructure.</h2>
               <p>
                 If you want long-term search visibility and answer engine visibility, you need a stable concept that can
-                be indexed, quoted, and understood. Multica is not “just another AI tool.” It is a cloud AI agent workspace.
+                be indexed, quoted, and understood. Multica is not just another AI tool. It is a cloud AI agent workspace.
               </p>
             </div>
             <div class="feature-grid">
@@ -461,12 +534,12 @@
                 <p>Because once tasks start piling up, ad hoc chat loses structure. Multica gives tasks, progress, results, and reusable skills a shared home.</p>
               </article>
               <article class="faq-item">
-                <h3>Why is this useful for solo developers?</h3>
-                <p>Solo builders constantly switch between shipping, fixing, testing, documenting, and preparing launches. This gives them a lightweight system to keep things moving.</p>
+                <h3>What kind of work fits best in Multica?</h3>
+                <p>Bug fixes, test coverage, docs updates, release prep, and refactor cleanup all fit well when they need visible progress and reusable workflow structure.</p>
               </article>
               <article class="faq-item">
-                <h3>Why is this useful for small teams?</h3>
-                <p>Small teams usually struggle with scattered knowledge, repeated explanations, and inconsistent task follow-through. A shared workspace makes lightweight collaboration easier.</p>
+                <h3>How is this different from a chat-only AI tool?</h3>
+                <p>Chat tools answer one message at a time. Multica is built to hold tasks, status, outputs, and reusable workflows across ongoing work.</p>
               </article>
               <article class="faq-item">
                 <h3>Why start at $10 per month?</h3>
@@ -533,3 +606,4 @@
     <script src="script.js"></script>
   </body>
 </html>
+
