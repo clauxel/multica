@@ -1,8 +1,8 @@
 import type { ComparisonPage, RouteView, SolutionPage } from '../app-types'
 
-const defaultSiteTitle = 'Multica - A Visual Workspace for Coding Agents'
+const defaultSiteTitle = 'Multica - Multi-Agent Collaboration for Real Workflows'
 const defaultSiteDescription =
-  'Multica turns Codex, Claude Code, and other coding agents into one visual workspace for launching, managing, and scaling real AI work.'
+  'Multica gives you one place to run, compare, and coordinate multiple AI agents in parallel across real workflows.'
 
 const canonicalLinkId = 'multica-canonical-link'
 const structuredDataScriptId = 'multica-structured-data'
