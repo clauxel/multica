@@ -1521,7 +1521,7 @@ function App() {
             </span>
             <span className="brand-text">
               <span className="brand-name">Multica</span>
-              <span className="brand-sub">Cloud agent workspace</span>
+              <span className="brand-sub">Visual workspace for coding agents</span>
             </span>
             {appEnvironment === 'development' ? <span className="brand-environment-badge">DEV MODE</span> : null}
           </a>
@@ -1640,14 +1640,13 @@ function App() {
           <>
             <section className="hero-section" data-analytics-section="hero">
               <div className="hero-copy">
-                <h1>Multica - Next-Gen Agent Workspace</h1>
+                <h1>Multica - A Visual Workspace for Coding Agents</h1>
                 <p>
-                  Experience the ultimate <strong>One-click Deployment</strong> for your <strong>autonomous AI agents</strong>.{' '}
-                  <strong>Choose your preferred model engine</strong> and <strong>instantly unlock</strong> a{' '}
-                  <strong>pre-configured</strong>, <strong>security-hardened cloud workspace</strong>.{' '}
-                  <strong>No complex setup</strong>, <strong>no coding required</strong> — just{' '}
-                  <strong>seamless intelligence</strong>, <strong>faster launch cycles</strong>, and{' '}
-                  <strong>business-ready automation in seconds</strong>.
+                  <strong>Multica turns Codex, Claude Code, and other coding agents into one workspace your team can actually use.</strong>{' '}
+                  Instead of juggling terminals, scattered prompts, and one-off runs, you get a{' '}
+                  <strong>single visual place to launch agents</strong>, compare outputs, and keep work organized. That
+                  means <strong>lower usage friction</strong>, <strong>clearer control</strong>, and a{' '}
+                  <strong>repeatable way to make AI work part of real production workflows</strong>.
                 </p>
               </div>
               <section className="launch-panel" aria-label="Launch builder" data-analytics-section="launch-builder">
