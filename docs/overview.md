@@ -1,55 +1,77 @@
-# Multica 项目概述
+# Multica Overview
 
-Multica 将编码 Agent 变成真正的队友。像分配给同事一样分配给 Agent——它们会自主接手工作、编写代码、报告阻塞问题、更新状态。
+This folder is a developer-focused documentation set for Multica.
 
-不再需要复制粘贴 prompt，不再需要盯着运行过程。你的 Agent 出现在看板上、参与对话、随着时间积累可复用的技能。
+It is built to answer four practical questions fast:
 
-**开源的 Managed Agents 基础设施——厂商中立、可自部署、专为人类 + AI 团队设计。**
+1. What problem does Multica solve?
+2. Should I start with cloud or self-hosting?
+3. What does day-one success look like?
+4. Where are the official docs if I need more detail?
 
-支持：Claude Code、Codex、OpenClaw、OpenCode
+## Scope Boundary
 
----
+- This folder is documentation only.
+- Commands such as `git clone https://github.com/multica-ai/multica.git` target the upstream Multica repository.
+- This folder does not include the actual server stack, Docker Compose files, or the `multica` binary.
 
-## 核心功能
+## What Multica Is
 
-| 功能 | 说明 |
-|------|------|
-| **Agent 即队友** | 有个人档案、出现在看板、发评论、创建 Issue、主动报告阻塞 |
-| **自主执行** | 完整任务生命周期：排队 → 认领 → 执行 → 完成/失败，WebSocket 实时推送进度 |
-| **可复用技能** | 每个解决方案自动成为全团队可复用的技能，能力随时间持续积累 |
-| **统一运行时** | 一个控制台管理本地 daemon 和云端运行时，自动检测可用 CLI |
-| **多工作区** | 工作区级别隔离，每个工作区有独立的 Agent、Issue 和设置 |
+Multica is an open-source platform for treating coding agents like real teammates.
 
----
+The practical mental model is:
 
-## 技术架构
+- people and agents work from the same project context,
+- work is tracked as issues rather than hidden inside ad hoc chats,
+- agent execution happens on visible runtimes,
+- teams can reuse successful workflows as skills,
+- you can start with Multica Cloud or self-host the platform.
 
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────────┐
-│   Next.js    │────>│  Go 后端     │────>│   PostgreSQL     │
-│   前端       │<────│  (Chi + WS)  │<────│   (pgvector)     │
-└──────────────┘     └──────┬───────┘     └──────────────────┘
-                            │
-                     ┌──────┴───────┐
-                     │ Agent Daemon │  （运行在你的机器上）
-                     │Claude/Codex/ │
-                     │OpenClaw/Code │
-                     └──────────────┘
-```
+## Where Multica Is Strong
 
-| 层级 | 技术栈 |
-|------|--------|
-| 前端 | Next.js 16 (App Router) |
-| 后端 | Go (Chi router, sqlc, gorilla/websocket) |
-| 数据库 | PostgreSQL 17 with pgvector |
-| Agent 运行时 | 本地 daemon 执行 Claude Code、Codex、OpenClaw 或 OpenCode |
+| Capability | Practical Meaning |
+|------------|-------------------|
+| Issue-centered workflow | Agents can be assigned work like teammates instead of living in separate chat tabs. |
+| Visible runtimes | You can see which machine is connected and which CLIs are available there. |
+| Reusable skills | Teams can turn repeated solutions into shared, reusable operating knowledge. |
+| Multi-workspace model | Workspaces, agents, and settings stay scoped to the right team. |
+| Self-host option | You can evaluate in cloud first and move to self-hosting later if needed. |
 
----
+## Good Fit
 
-## 多租户
+- Teams already using coding agents who now want coordination and visibility.
+- Developers who want agents to execute against local or self-managed runtimes.
+- Teams that prefer issues, review flows, and tracked execution over chat-only usage.
 
-所有查询按 `workspace_id` 过滤，成员检查控制访问权限，`X-Workspace-ID` 请求头路由到正确工作区。
+## Poor Fit
 
-## Agent 被分配者
+- People looking only for a single chat-style assistant.
+- Teams that do not want to install or run any local agent CLI.
+- Readers expecting this folder to replace the full official product documentation.
 
-被分配者是多态的——可以是成员或 Agent。Issue 上有 `assignee_type` + `assignee_id`。Agent 以紫色背景 + 机器人图标渲染。
+## Cloud vs Self-Host
+
+| If you mainly want... | Choose |
+|-----------------------|--------|
+| Fastest evaluation and the least setup | Multica Cloud |
+| Full infrastructure control | Self-hosted Multica |
+| Quick CLI/runtime testing on Windows | Multica Cloud first |
+| Docker-based local platform deployment | Self-hosted Multica |
+
+## What First Success Looks Like
+
+You are in a good state when all of the following are true:
+
+- `multica daemon status` reports a running daemon,
+- the web app shows your machine in **Settings -> Runtimes**,
+- at least one supported agent CLI is detected,
+- you can create an agent,
+- you can assign one issue and observe execution progress.
+
+## Read Next
+
+- Fastest path to a working setup: [quick-start.md](quick-start.md)
+- Correct CLI syntax and daily commands: [cli-reference.md](cli-reference.md)
+- Self-host details and caveats: [self-hosting.md](self-hosting.md)
+- Failure handling and stale-doc traps: [troubleshooting.md](troubleshooting.md)
+- Required comparison tables: [market-reference.md](market-reference.md)

@@ -1,39 +1,44 @@
-# 自部署指南
+# Multica Self-Hosting Guide
 
-## 系统架构
+This guide is for developers who want to run Multica on their own infrastructure.
 
-| 组件 | 说明 | 技术 |
-|------|------|------|
-| 后端 | REST API + WebSocket | Go（单二进制） |
-| 前端 | Web 应用 | Next.js 16 |
-| 数据库 | 主数据存储 | PostgreSQL 17 with pgvector |
+## Important Boundary
 
-运行 AI Agent 的每位团队成员还需在本机安装 `multica` CLI 并启动 Agent Daemon。
+- The commands below target the upstream repository `multica-ai/multica`.
+- This promotion folder does not include the actual Docker Compose files, server source code, or CLI binaries.
+- The official quick path uses Docker plus a Bash install script.
 
----
+## What The Official Docs Promise
 
-## 一键安装（推荐）
+The public Multica materials position self-hosting around:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.sh | bash -s -- --local
-```
+- Docker Compose,
+- a local CLI and daemon on each developer machine that runs agents,
+- a hosted-or-self-hosted choice from the same product model.
 
-自动完成：克隆仓库 → Docker Compose 启动所有服务 → 安装 `multica` CLI。
+The most concrete published setup path is Docker-based self-hosting.
 
-完成后打开 http://localhost:3000，用任意邮箱 + 验证码 **`888888`** 登录，然后：
+## Quick Install: Recommended
 
 ```bash
-multica login          # 认证
-multica daemon start   # 启动 Agent Daemon
+curl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.sh | bash -s -- --with-server
+multica setup self-host
 ```
 
-> **前提：** 已安装 Docker 和 Docker Compose。
+What this path does:
 
----
+1. Provisions the self-hosted server stack with Docker
+2. Installs the `multica` CLI
+3. Configures the CLI for localhost
+4. Opens login
+5. Starts the local daemon
 
-## 分步安装
+Documented local defaults:
 
-### Step 1 — 启动服务
+- Frontend: `http://localhost:3000`
+- Backend API: `http://localhost:8080`
+
+## Manual Docker Compose Flow
 
 ```bash
 git clone https://github.com/multica-ai/multica.git
@@ -41,130 +46,124 @@ cd multica
 make selfhost
 ```
 
-`make selfhost` 自动从 `.env.example` 创建 `.env`、生成随机 `JWT_SECRET`、启动 Docker Compose。
+According to the official docs, `make selfhost` will:
 
-- 前端：http://localhost:3000
-- 后端 API：http://localhost:8080
+1. create `.env` from the example file,
+2. generate a random `JWT_SECRET`,
+3. start the full service stack.
 
-### Step 2 — 登录
+After the server stack is up, the easiest next step is still:
 
-打开 http://localhost:3000，任意邮箱 + 验证码 **`888888`**。
+```bash
+multica setup self-host
+multica daemon status
+```
 
-> 非生产环境（`APP_ENV` 非 `production`）均可用此万能验证码。生产环境需配置邮件服务。
+That configures the CLI for localhost, opens login, and starts the daemon.
 
-### Step 3 — 安装 CLI 并启动 Daemon
+## Install The CLI If Needed
 
-每位需要在本机运行 Agent 的团队成员执行：
+If you used the manual server path and do not have the CLI yet:
 
-**a) 安装 CLI 和 AI Agent**
+macOS or Linux with Homebrew:
 
 ```bash
 brew install multica-ai/tap/multica
 ```
 
-至少需要安装一个 AI Agent CLI：
-- Claude Code：`claude`
-- Codex：`codex`
-- OpenClaw：`openclaw`
-- OpenCode：`opencode`
-
-**b) 一键 Setup**
+macOS or Linux without Homebrew:
 
 ```bash
-multica setup --local
+curl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.sh | bash
 ```
 
-自动完成：
-1. 配置 CLI 连接 `localhost`（端口 8080/3000）
-2. 浏览器认证
-3. 发现工作区
-4. 后台启动 Daemon
+Windows PowerShell:
 
-验证 Daemon 是否运行：
+```powershell
+irm https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.ps1 | iex
+```
+
+## Login Notes
+
+For local non-production self-hosting, the official docs describe:
+
+- any email address for login,
+- verification code `888888`.
+
+Important caveat:
+
+- this is for non-production environments only,
+- production setups should use real email-based authentication.
+
+## CLI and Daemon on Developer Machines
+
+Each developer who wants to run AI agents locally still needs:
+
+- the `multica` CLI,
+- at least one supported AI CLI on `PATH`,
+- the daemon running on their own machine.
+
+Supported AI CLIs:
+
+- `claude`
+- `codex`
+- `openclaw`
+- `opencode`
+- `hermes`
+
+## Manual CLI Configuration
+
+If the server is already running and you want to point the CLI at it manually:
 
 ```bash
-multica daemon status
+multica config set server_url http://localhost:8080
+multica config set app_url http://localhost:3000
+multica login
+multica daemon start
 ```
 
-### Step 4 — 验证并开始使用
-
-1. 打开 http://localhost:3000
-2. **设置 → 运行时（Runtimes）**，确认你的机器已出现
-3. **设置 → Agents**，创建 Agent
-4. 创建 Issue 并分配给 Agent
-
----
-
-## 停止服务
+For custom domains:
 
 ```bash
-# 通过安装脚本方式
-curl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.sh | bash -s -- --stop
-
-# 手动克隆方式
-make selfhost-stop     # 停止 Docker Compose
-multica daemon stop    # 停止本地 Daemon
+multica setup self-host --server-url https://api.example.com --app-url https://app.example.com
 ```
 
----
+## Verification Checklist
 
-## 更新
+After self-hosting, verify all of the following:
+
+- the frontend loads in a browser,
+- the API is reachable,
+- `multica login` succeeds,
+- `multica daemon status` shows a running daemon,
+- at least one supported AI CLI is detected,
+- your machine appears in **Settings -> Runtimes**,
+- you can create an agent and assign an issue.
+
+## Stop and Rebuild
+
+Stop services:
+
+```bash
+make selfhost-stop
+multica daemon stop
+```
+
+Rebuild after updates:
 
 ```bash
 git pull
 make selfhost
 ```
 
-迁移在后端启动时自动运行。
+## When Self-Hosting Is The Right Choice
 
----
+- You want full infrastructure control.
+- You want a Docker-based deployment on your own machines or servers.
+- You are comfortable owning networking, credentials, upgrades, and operations.
 
-## 手动 Docker Compose
+## When Multica Cloud Is Better First
 
-```bash
-git clone https://github.com/multica-ai/multica.git
-cd multica
-cp .env.example .env
-# 编辑 .env，至少修改 JWT_SECRET：
-# JWT_SECRET=$(openssl rand -hex 32)
-docker compose -f docker-compose.selfhost.yml up -d
-```
-
----
-
-## 手动 CLI 配置
-
-```bash
-multica config local          # 指向本地服务（默认端口）
-# 或手动设置：
-# multica config set app_url http://localhost:3000
-# multica config set server_url http://localhost:8080
-
-multica login
-multica daemon start
-```
-
-生产环境（TLS）：
-
-```bash
-multica config set app_url https://app.example.com
-multica config set server_url https://api.example.com
-multica login
-multica daemon start
-```
-
----
-
-## 切换回 Multica 云服务
-
-```bash
-multica config set server_url https://api.multica.ai
-multica config set app_url https://multica.ai
-multica login
-```
-
-或直接重新运行安装脚本（不加 `--local`）：
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/multica-ai/multica/main/scripts/install.sh | bash
-```
+- You mainly want to evaluate product fit quickly.
+- You do not want to maintain the stack on day one.
+- You want the shortest path to a connected runtime and first assigned issue.
