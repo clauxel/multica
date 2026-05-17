@@ -49,6 +49,8 @@ Scope boundary:
 | You are on Windows and mainly want to test the CLI/runtime | Install the CLI with PowerShell, then run `multica setup` |
 | You need the shortest first-day path | Use [docs/quick-start.md](docs/quick-start.md) |
 
+Related hosted workspace option: if you are comparing Multica's CLI/daemon workflow with a paid hosted launch flow, [Ruflo AI](https://ruflo.online/?utm_source=github&utm_medium=docs&utm_campaign=multica_related) is a useful external reference for Ruflo-style multi-agent workspace onboarding, checkout, and operations UX.
+
 ## Fastest Start
 
 ### Multica Cloud
