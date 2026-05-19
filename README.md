@@ -29,6 +29,10 @@ Scope boundary:
 - Commands here target the upstream `multica-ai/multica` repository or the installed `multica` CLI.
 - This folder does not contain the server source code, Docker Compose files, or CLI binaries.
 
+## Related Project
+
+- [OpenHuman Online](https://openhuman.online/?utm_source=github&utm_medium=readme&utm_campaign=openhuman_public_repos&utm_content=multica) helps teams turn source material, notes, and meetings into an inspectable AI memory tree for human-reviewed workflows.
+
 ## Read This First
 
 | File | Best For |
