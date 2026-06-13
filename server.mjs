@@ -37,6 +37,8 @@ import { createPaymentHelpers } from './server-lib/payment-helpers.mjs'
 import { createSecurityHelpers } from './server-lib/security-helpers.mjs'
 import { createSerializationHelpers } from './server-lib/serialization-helpers.mjs'
 import { createSessionHelpers } from './server-lib/session-helpers.mjs'
+import { renderHtmlWithSeo } from './server-lib/html-seo.mjs'
+import { buildPublicSeoPayload, buildRobotsTxt, buildSitemapXml, siteIdentity } from './shared/public-site-seo.mjs'
 import {
   annualBillingMultiplier,
   channelCatalog,
@@ -47,7 +49,18 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = __dirname
 const modeIndex = process.argv.indexOf('--mode')
-const runtimeMode = modeIndex >= 0 ? process.argv[modeIndex + 1] : 'development'
+const isVercelRuntime = Boolean(process.env.VERCEL || process.env.MULTICA_SERVERLESS_API)
+const runtimeMode =
+  modeIndex >= 0
+    ? process.argv[modeIndex + 1]
+    : isVercelRuntime || process.env.NODE_ENV === 'production'
+      ? 'production'
+      : 'development'
+const shouldStartHttpServer = !isVercelRuntime || process.env.MULTICA_START_HTTP_SERVER === 'true'
+
+if (isVercelRuntime && !process.env.MULTICA_DEPLOYMENT_MODE) {
+  process.env.MULTICA_DEPLOYMENT_MODE = 'manual'
+}
 
 loadLocalEnvironment({
   projectRoot,
@@ -65,7 +78,7 @@ const appEnvironment =
         : 'development'
 
 const distDirectory = join(projectRoot, 'dist')
-const port = Number(process.env.PORT ?? 5173)
+const port = Number(process.env.PORT ?? 5175)
 const sessionCookieName = 'mca_session'
 const guestCookieName = 'mca_guest'
 const multicaConsoleSessionCookieName = 'mca_console_session'
@@ -133,6 +146,87 @@ const serverSeoPageMap = new Map([
     {
       title: 'Multica - Deploy Your Multi-Channel AI Agent',
       description: defaultMarketingDescription,
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/guides/multica-project',
+    {
+      title: 'Multica 项目 | Multica',
+      description:
+        'Understand what the Multica project is, what problem it solves, and what to inspect before adopting it for a team workflow.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/guides/multica-ai',
+    {
+      title: 'Multica AI | Multica',
+      description:
+        'Learn what people usually mean by Multica AI and how the product differs from a single coding model or chatbot.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/guides/multica-github',
+    {
+      title: 'Multica GitHub | Multica',
+      description:
+        'Evaluate the official Multica GitHub repository faster by focusing on install flow, runtimes, releases, and self-hosting signals.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/guides/multica-pricing',
+    {
+      title: 'Multica pricing | Multica',
+      description:
+        'Separate open-source cost, official product path, and this site’s managed launch plans when you research Multica pricing.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/guides/coleam00-github',
+    {
+      title: 'Coleam00 GitHub | Multica',
+      description:
+        'Use this guide to understand which Coleam00 repositories matter most when you research AI-agent workflows around Multica.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/compare/codex',
+    {
+      title: 'Codex | Multica',
+      description:
+        'Compare Multica and Codex when choosing between a team coordination layer and a direct coding agent.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/compare/slock-ai',
+    {
+      title: 'Slock AI | Multica',
+      description:
+        'Compare Multica and Slock AI to decide between issue-centric coordination and chat-native human + agent collaboration.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/compare/openclaw',
+    {
+      title: 'OpenClaw | Multica',
+      description:
+        'Compare Multica and OpenClaw when deciding between a team work system and a local-first personal AI assistant.',
+      robots: 'index,follow',
+    },
+  ],
+  [
+    '/compare/opencode',
+    {
+      title: 'OpenCode | Multica',
+      description:
+        'Compare Multica and OpenCode to decide when a coding agent is enough and when you need orchestration above it.',
       robots: 'index,follow',
     },
   ],
@@ -2179,6 +2273,10 @@ async function getDeploymentCount(orderId) {
   return Number((await countDeploymentsByOrderStatement.get(orderId))?.count ?? 0)
 }
 
+function getPaidOrderTriggerMode() {
+  return process.env.MULTICA_DEPLOYMENT_MODE === 'manual' ? 'manual' : 'automatic'
+}
+
 async function canTriggerDeployment(order) {
   if (!order || order.payment_status !== 'paid') {
     return false
@@ -2224,12 +2322,15 @@ async function createDeploymentForOrder(order, triggerMode) {
 
 async function queuePaidOrder(order) {
   const timestamp = nowIso()
+  const triggerMode = getPaidOrderTriggerMode()
 
   if (order.payment_status !== 'paid') {
     await updateOrderPaymentStatement.run(
       'paid',
       order.deployment_status === 'awaiting_payment' ? 'awaiting_payment' : order.deployment_status,
-      'Payment confirmed. Preparing deployment trigger.',
+      triggerMode === 'manual'
+        ? 'Payment confirmed. Your Multica is waiting in the provisioning queue.'
+        : 'Payment confirmed. Preparing deployment trigger.',
       timestamp,
       timestamp,
       order.id,
@@ -2245,7 +2346,7 @@ async function queuePaidOrder(order) {
     return freshOrder
   }
 
-  await createDeploymentForOrder(freshOrder, 'automatic')
+  await createDeploymentForOrder(freshOrder, triggerMode)
   return await findOrderByIdStatement.get(order.id)
 }
 
@@ -2947,6 +3048,10 @@ function runBackgroundTask(task, label) {
 }
 
 async function pumpDeploymentQueue() {
+  if (process.env.MULTICA_DEPLOYMENT_MODE === 'manual') {
+    return
+  }
+
   const queuedDeployments = await listQueuedDeploymentsStatement.all()
 
   for (const deployment of queuedDeployments) {
@@ -3126,6 +3231,7 @@ const apiRouter = createApiRouter({
   getCreemWebhookOrderId,
   getDeploymentConsoleToken,
   getDeploymentRuntimeConfig,
+  getPaidOrderTriggerMode,
   getGuestToken,
   getModelById,
   getPayPalCheckoutUrl,
@@ -3198,7 +3304,7 @@ async function handleApiRequest(request, response) {
   return await apiRouter.handle({ request, response, requestUrl })
 }
 
-const server = createServer(async (request, response) => {
+async function handleMulticaNodeRequest(request, response) {
   applySecurityHeaders(response)
   applyCorsHeaders(request, response)
   void cleanupExpiredSessions()
@@ -3230,26 +3336,59 @@ const server = createServer(async (request, response) => {
     console.error(error)
     sendJson(response, 500, { message: 'Internal server error.' })
   }
-})
+}
 
-server.on('upgrade', (request, socket, head) => {
-  void handleMulticaConsoleProxyUpgrade(request, socket, head)
-})
+export async function handleMulticaApiRequest(request, response) {
+  applySecurityHeaders(response)
+  applyCorsHeaders(request, response)
+  void cleanupExpiredSessions()
+  cleanupExpiredMulticaConsoleSessions()
 
-export const serverReady = new Promise((resolve) => {
-  server.listen(port, () => {
-    console.log(
-      `Multica server running on http://localhost:${port} using ${databaseProvider} database ${databaseIdentity}`,
-    )
-    resolve()
+  try {
+    if (await handleApiRequest(request, response)) {
+      return
+    }
+
+    sendJson(response, 404, { message: 'Not found.' })
+  } catch (error) {
+    if (error instanceof HttpError) {
+      sendJson(response, error.statusCode, { message: error.message })
+      return
+    }
+
+    console.error(error)
+    sendJson(response, 500, { message: 'Internal server error.' })
+  }
+}
+
+const server = shouldStartHttpServer ? createServer(handleMulticaNodeRequest) : null
+
+if (server) {
+  server.on('upgrade', (request, socket, head) => {
+    void handleMulticaConsoleProxyUpgrade(request, socket, head)
   })
-})
+}
 
-const deploymentPumpInterval = setInterval(() => {
-  runBackgroundTask(() => pumpDeploymentQueue(), 'pumpDeploymentQueue:interval')
-}, deploymentPollIntervalMs)
+export const serverReady = shouldStartHttpServer
+  ? new Promise((resolve) => {
+      server.listen(port, () => {
+        console.log(
+          `Multica server running on http://localhost:${port} using ${databaseProvider} database ${databaseIdentity}`,
+        )
+        resolve()
+      })
+    })
+  : Promise.resolve()
 
-runBackgroundTask(() => pumpDeploymentQueue(), 'pumpDeploymentQueue:startup')
+const deploymentPumpInterval = shouldStartHttpServer
+  ? setInterval(() => {
+      runBackgroundTask(() => pumpDeploymentQueue(), 'pumpDeploymentQueue:interval')
+    }, deploymentPollIntervalMs)
+  : null
+
+if (shouldStartHttpServer) {
+  runBackgroundTask(() => pumpDeploymentQueue(), 'pumpDeploymentQueue:startup')
+}
 
 let didStopServer = false
 
@@ -3259,9 +3398,13 @@ export async function stopMulticaLaunchServer() {
   }
 
   didStopServer = true
-  clearInterval(deploymentPumpInterval)
+  if (deploymentPumpInterval) {
+    clearInterval(deploymentPumpInterval)
+  }
 
-  await new Promise((resolve) => server.close(() => resolve()))
+  if (server) {
+    await new Promise((resolve) => server.close(() => resolve()))
+  }
   await database.close()
 
   if (viteServer?.close) {
@@ -3273,6 +3416,10 @@ function getMimeType(filePath) {
   switch (extname(filePath)) {
     case '.html':
       return 'text/html; charset=utf-8'
+    case '.txt':
+      return 'text/plain; charset=utf-8'
+    case '.xml':
+      return 'application/xml; charset=utf-8'
     case '.js':
       return 'text/javascript; charset=utf-8'
     case '.css':
@@ -3312,74 +3459,18 @@ function replaceHeadTag(html, pattern, replacement) {
 }
 
 function getServerSeoConfig(request, pathname) {
-  const normalizedPath = normalizeSeoPathname(pathname)
-  const origin = getPublicAppOrigin(request)
-  const canonicalUrl = new URL(normalizedPath, `${origin}/`).toString()
-  const page = serverSeoPageMap.get(normalizedPath)
-
-  if (page) {
-    return {
-      ...page,
-      canonicalUrl,
-    }
-  }
-
-  return {
-    title: 'Page not found | Multica',
-    description:
-      'This Multica page could not be matched to a public marketing route. Return to the homepage to continue.',
-    robots: 'noindex,nofollow',
-    canonicalUrl,
-  }
+  return buildPublicSeoPayload({
+    origin: getPublicAppOrigin(request),
+    pathname: normalizeSeoPathname(pathname),
+    supportEmail: siteIdentity.supportEmail,
+  })
 }
 
 function renderSeoHtml(request, pathname, templateHtml) {
-  const seo = getServerSeoConfig(request, pathname)
-
-  let html = templateHtml
-  html = replaceHeadTag(html, /<title>[\s\S]*?<\/title>/i, `<title>${escapeHtmlAttribute(seo.title)}</title>`)
-  html = replaceHeadTag(
-    html,
-    /<meta\s+name="description"[^>]*>/i,
-    `<meta name="description" content="${escapeHtmlAttribute(seo.description)}" />`,
-  )
-  html = replaceHeadTag(
-    html,
-    /<meta\s+name="robots"[^>]*>/i,
-    `<meta name="robots" content="${escapeHtmlAttribute(seo.robots)}" />`,
-  )
-  html = replaceHeadTag(
-    html,
-    /<link\s+rel="canonical"[^>]*>/i,
-    `<link rel="canonical" href="${escapeHtmlAttribute(seo.canonicalUrl)}" />`,
-  )
-  html = replaceHeadTag(
-    html,
-    /<meta\s+property="og:title"[^>]*>/i,
-    `<meta property="og:title" content="${escapeHtmlAttribute(seo.title)}" />`,
-  )
-  html = replaceHeadTag(
-    html,
-    /<meta\s+property="og:description"[^>]*>/i,
-    `<meta property="og:description" content="${escapeHtmlAttribute(seo.description)}" />`,
-  )
-  html = replaceHeadTag(
-    html,
-    /<meta\s+property="og:url"[^>]*>/i,
-    `<meta property="og:url" content="${escapeHtmlAttribute(seo.canonicalUrl)}" />`,
-  )
-  html = replaceHeadTag(
-    html,
-    /<meta\s+name="twitter:title"[^>]*>/i,
-    `<meta name="twitter:title" content="${escapeHtmlAttribute(seo.title)}" />`,
-  )
-  html = replaceHeadTag(
-    html,
-    /<meta\s+name="twitter:description"[^>]*>/i,
-    `<meta name="twitter:description" content="${escapeHtmlAttribute(seo.description)}" />`,
-  )
-
-  return html
+  return renderHtmlWithSeo({
+    templateHtml,
+    seoPayload: getServerSeoConfig(request, pathname),
+  })
 }
 
 function isHtmlPageRequest(request, requestUrl) {
@@ -3403,6 +3494,14 @@ function sendFile(response, filePath) {
   response.end(body)
 }
 
+function sendStringContent(response, statusCode, contentType, body, cacheControl = 'no-store') {
+  response.statusCode = statusCode
+  response.setHeader('Content-Type', contentType)
+  response.setHeader('Content-Length', Buffer.byteLength(body))
+  response.setHeader('Cache-Control', cacheControl)
+  response.end(body)
+}
+
 function serveProductionAsset(request, response) {
   if (!existsSync(distDirectory)) {
     throw new HttpError(503, 'Build output is missing. Run npm run build first.')
@@ -3410,10 +3509,23 @@ function serveProductionAsset(request, response) {
 
   const requestUrl = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`)
 
+  if (requestUrl.pathname === '/robots.txt') {
+    const body = buildRobotsTxt(getPublicAppOrigin(request))
+    sendStringContent(response, 200, 'text/plain; charset=utf-8', body, 'max-age=14400')
+    return
+  }
+
+  if (requestUrl.pathname === '/sitemap.xml') {
+    const body = buildSitemapXml(getPublicAppOrigin(request))
+    sendStringContent(response, 200, 'application/xml; charset=utf-8', body, 'no-cache')
+    return
+  }
+
   if (isHtmlPageRequest(request, requestUrl)) {
     const templateHtml = readFileSync(join(distDirectory, 'index.html'), 'utf8')
+    const seo = getServerSeoConfig(request, requestUrl.pathname)
     const body = renderSeoHtml(request, requestUrl.pathname, templateHtml)
-    response.statusCode = 200
+    response.statusCode = seo.statusCode
     response.setHeader('Content-Type', 'text/html; charset=utf-8')
     response.setHeader('Content-Length', Buffer.byteLength(body))
     response.setHeader('Cache-Control', 'no-store')
@@ -3440,5 +3552,5 @@ function serveProductionAsset(request, response) {
     return
   }
 
-  sendFile(response, join(distDirectory, 'index.html'))
+  throw new HttpError(404, 'Not found.')
 }

@@ -56,3 +56,27 @@ test('开发模式只自动加载 .env.development', () => {
   assert.equal(environment.DEV_ONLY, '1')
   assert.equal(environment.PAY_CLIENT_ID, 'local-client')
 })
+
+test('Vercel runtime uses deployed environment variables instead of local env files', () => {
+  const workspaceRoot = mkdtempSync(join(tmpdir(), 'multica-env-loader-vercel-'))
+  const appRoot = join(workspaceRoot, 'app')
+  mkdirSync(appRoot, { recursive: true })
+
+  writeFileSync(join(appRoot, '.env.production'), 'APP_ORIGIN=https://wrong.example.com\nDATABASE_URL=postgres://local\n', 'utf8')
+
+  const environment = {
+    VERCEL: '1',
+    APP_ORIGIN: 'https://multica.example.test',
+    DATABASE_URL: 'postgres://vercel',
+  }
+
+  const loadedFiles = loadLocalEnvironment({
+    projectRoot: appRoot,
+    runtimeMode: 'production',
+    environment,
+  })
+
+  assert.equal(loadedFiles.length, 0)
+  assert.equal(environment.APP_ORIGIN, 'https://multica.example.test')
+  assert.equal(environment.DATABASE_URL, 'postgres://vercel')
+})

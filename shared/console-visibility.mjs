@@ -14,15 +14,20 @@ function getRemainingDeployments(remaining, included, usedCount = 0) {
   return Math.max(included - usedCount, 0)
 }
 
-function isDeploymentInProgress(status) {
+function isDeploymentPending(status) {
   return status === 'queued' || status === 'provisioning'
+}
+
+function isDeploymentRunning(status) {
+  return status === 'provisioning'
 }
 
 export function getRedeployManagementState(row) {
   const latestDeploymentStatus = row.order.deployment?.status ?? row.order.deploymentStatus
-  const latestDeploymentInProgress = isDeploymentInProgress(latestDeploymentStatus)
+  const latestDeploymentInProgress = isDeploymentPending(latestDeploymentStatus)
   const rowDeploymentStatus = row.deployment?.status ?? null
-  const rowDeploymentInProgress = isDeploymentInProgress(rowDeploymentStatus)
+  const rowDeploymentInProgress = isDeploymentPending(rowDeploymentStatus)
+  const rowDeploymentRunning = isDeploymentRunning(rowDeploymentStatus)
   const rowDeploymentFailed = rowDeploymentStatus === 'failed'
   const visible =
     Boolean(row.deployment) &&
@@ -32,7 +37,7 @@ export function getRedeployManagementState(row) {
   return {
     visible,
     disabled,
-    label: rowDeploymentInProgress ? 'Deployment running...' : 'Deploy',
+    label: rowDeploymentStatus === 'queued' ? 'Queued for provisioning' : rowDeploymentRunning ? 'Deployment running...' : 'Deploy',
   }
 }
 

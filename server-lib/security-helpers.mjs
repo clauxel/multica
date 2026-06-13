@@ -3,6 +3,19 @@ export function createSecurityHelpers({
   getAbsoluteRequestOrigin,
   HttpError,
 }) {
+  function normalizeComparableHostname(hostname) {
+    return String(hostname ?? '')
+      .trim()
+      .replace(/^\[|\]$/g, '')
+      .replace(/^www\./i, '')
+      .toLowerCase()
+  }
+
+  function isLoopbackHostname(hostname) {
+    const normalizedHostname = normalizeComparableHostname(hostname)
+    return normalizedHostname === 'localhost' || normalizedHostname === '127.0.0.1' || normalizedHostname === '::1'
+  }
+
   function applySecurityHeaders(response) {
     response.setHeader('X-Content-Type-Options', 'nosniff')
     response.setHeader('X-Frame-Options', 'DENY')
@@ -18,12 +31,28 @@ export function createSecurityHelpers({
   }
 
   function getPublicAppOrigin(request) {
+    const requestOrigin = getAbsoluteRequestOrigin(request)
     const configuredOrigin = getConfiguredAppOrigins()[0]
-    if (configuredOrigin) {
-      return configuredOrigin
+    if (!configuredOrigin) {
+      return requestOrigin
     }
 
-    return getAbsoluteRequestOrigin(request)
+    try {
+      const configuredUrl = new URL(configuredOrigin)
+      const requestUrl = new URL(requestOrigin)
+
+      if (isLoopbackHostname(requestUrl.hostname)) {
+        return configuredOrigin
+      }
+
+      if (normalizeComparableHostname(configuredUrl.hostname) === normalizeComparableHostname(requestUrl.hostname)) {
+        return configuredOrigin
+      }
+    } catch {
+      return requestOrigin
+    }
+
+    return requestOrigin
   }
 
   function getCreemReturnOrigin(request) {

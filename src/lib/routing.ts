@@ -1,4 +1,5 @@
 import type { RouteView } from '../app-types'
+import { findPublicRouteDefinition } from '../../shared/public-site-seo'
 
 export const launchDraftStorageKey = 'multica-draft'
 
@@ -21,13 +22,5 @@ export function scrollToHashTarget(hash: string, behavior: ScrollBehavior = 'smo
 }
 
 export function deriveRouteView(pathname: string): RouteView {
-  const normalized = normalizePathname(pathname)
-  if (normalized === '/plans') return 'plans'
-  if (normalized === '/console') return 'console'
-  if (normalized === '/checkout') return 'console'
-  if (normalized === '/privacy') return 'privacy'
-  if (normalized === '/terms') return 'terms'
-  if (normalized.startsWith('/compare/')) return 'compare'
-  if (normalized.startsWith('/solutions/')) return 'solution'
-  return 'home'
+  return findPublicRouteDefinition(normalizePathname(pathname))?.routeView ?? 'notFound'
 }

@@ -21,18 +21,33 @@ export function getGuestTokenFromPath(path: string) {
   return absoluteUrl.searchParams.get('guest_token')
 }
 
-export function openHostedCheckout(url: string) {
-  const popup = window.open(
-    url,
-    'multica-paypal-checkout',
-    'popup=yes,width=520,height=760,resizable=yes,scrollbars=yes',
-  )
+const hostedCheckoutWindowName = 'multica-hosted-checkout'
+const hostedCheckoutWindowFeatures = 'popup=yes,width=520,height=760,resizable=yes,scrollbars=yes'
 
-  if (!popup) {
+export function openHostedCheckoutPlaceholder() {
+  return window.open('about:blank', hostedCheckoutWindowName, hostedCheckoutWindowFeatures)
+}
+
+export function openHostedCheckout(url: string, popup: Window | null = null) {
+  const openedWindow =
+    popup && !popup.closed
+      ? popup
+      : window.open(
+          url,
+          hostedCheckoutWindowName,
+          hostedCheckoutWindowFeatures,
+        )
+
+  if (!openedWindow) {
     return false
   }
 
-  popup.focus()
+  try {
+    openedWindow.opener = null
+  } catch {}
+
+  openedWindow.location.href = url
+  openedWindow.focus()
   return true
 }
 

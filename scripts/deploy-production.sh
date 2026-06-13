@@ -201,7 +201,7 @@ systemctl is-active --quiet "$SERVICE_NAME" || {
 }
 
 APP_PORT="$(awk -F= '/^PORT=/{print $2}' "$ENV_FILE" | tail -n1)"
-APP_PORT="${APP_PORT:-5173}"
+APP_PORT="${APP_PORT:-5175}"
 
 log "Checking local health endpoint on port $APP_PORT"
 if command -v curl >/dev/null 2>&1; then

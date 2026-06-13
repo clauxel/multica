@@ -21,7 +21,7 @@ export function normalizeModelProxyUpstreamBaseUrl(value) {
 export function buildInternalModelProxyBaseUrl(instanceName, environment = process.env) {
   const configuredBaseUrl = stripTrailingSlash(String(environment.MULTICA_MODEL_PROXY_INTERNAL_BASE_URL ?? '').trim())
   const baseUrl =
-    configuredBaseUrl || `http://127.0.0.1:${Number(environment.PORT ?? 5173) || 5173}/api/internal/model-proxy`
+    configuredBaseUrl || `http://127.0.0.1:${Number(environment.PORT ?? 5175) || 5175}/api/internal/model-proxy`
   const normalizedInstanceName = String(instanceName ?? '').trim()
 
   if (!normalizedInstanceName) {

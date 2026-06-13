@@ -289,7 +289,7 @@ async function proxyUpgradeRequest({ request, socket, head, routesDir, sharedTok
 export function createMulticaInstanceRouter({
   routesDir = process.env.MULTICA_ROUTER_ROUTES_DIR ?? '/data/multica/router/routes',
   host = process.env.MULTICA_ROUTER_HOST ?? '127.0.0.1',
-  port = Number(process.env.MULTICA_ROUTER_PORT ?? 19080),
+  port = Number(process.env.MULTICA_ROUTER_PORT ?? 19280),
   sharedToken = process.env.MULTICA_ROUTER_SHARED_TOKEN ?? '',
 } = {}) {
   const router = {

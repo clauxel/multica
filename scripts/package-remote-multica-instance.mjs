@@ -67,7 +67,7 @@ function isLocalPackageTarget(host, environment = process.env) {
 }
 
 function defaultTemplateArchivePath() {
-  return '/root/multica-templates/multica-template.tar.gz'
+  return '/data/multica/templates/multica-template.tar.gz'
 }
 
 export function normalizeInstanceQuery(value) {
@@ -136,7 +136,7 @@ export function resolveRemotePackageRequest({
 
   if (!runLocal && !deploymentConfig.server.password && !deploymentConfig.server.privateKey) {
     throw new Error(
-      'Missing SSH credentials. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_DEPLOY_PRIVATE_KEY_PATH before packaging.',
+      'Missing SSH credentials. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_AGENT_DEPLOY_PRIVATE_KEY_PATH before packaging.',
     )
   }
 

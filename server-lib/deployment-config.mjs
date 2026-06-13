@@ -77,6 +77,7 @@ function resolveServerPrivateKey(configDirectory) {
   }
 
   const configuredPrivateKeyPath = firstDefined(
+    process.env.MULTICA_AGENT_DEPLOY_PRIVATE_KEY_PATH,
     process.env.MULTICA_DEPLOY_PRIVATE_KEY_PATH,
     process.env.MULTICA_SERVER_PRIVATE_KEY_PATH,
   )
@@ -126,11 +127,14 @@ function sanitizeRawConfig(rawConfig) {
     }
   }
 
+  const defaultArchivePath = '/data/multica/templates/multica-template.tar.gz'
   const normalizedRepoUrl = normalizeConfiguredValue(multica.repoUrl) || 'https://github.com/multica/multica.git'
   const normalizedRepoRef = normalizeConfiguredValue(multica.repoRef) || 'main'
-  const normalizedSourceType = multica.sourceType === 'archive' ? 'archive' : 'git'
+  const normalizedSourceType = multica.sourceType === 'git' ? 'git' : 'archive'
   const normalizedArchiveUrl = normalizeConfiguredValue(multica.archiveUrl)
-  const normalizedArchivePath = normalizeConfiguredValue(multica.archivePath)
+  const normalizedArchivePath =
+    normalizeConfiguredValue(multica.archivePath) ||
+    (normalizedSourceType === 'archive' && !normalizedArchiveUrl ? defaultArchivePath : '')
   const repoUrlChanged = typeof multica.repoUrl === 'string' && multica.repoUrl !== normalizedRepoUrl
   const repoRefChanged = typeof multica.repoRef === 'string' && multica.repoRef !== normalizedRepoRef
   const sourceTypeChanged = typeof multica.sourceType === 'string' && multica.sourceType !== normalizedSourceType
@@ -175,21 +179,22 @@ function ensureConfigFile(configPath) {
           targetServer: 'mock-multica-server',
           consoleBaseUrl: 'https://console.multica.local',
           publicBaseUrl: 'https://multica.local',
+          consolePortBase: 58000,
+          consolePortRange: 4000,
           mockRootDir: './data/mock-remote',
         },
         multica: {
           repoUrl: 'https://github.com/multica/multica.git',
           repoRef: 'main',
-          sourceType: 'git',
+          sourceType: 'archive',
           archiveUrl: '',
-          archivePath: '',
-          baseDir: '/srv/multica',
+          archivePath: '/data/multica/templates/multica-template.tar.gz',
+          baseDir: '/data/multica',
           servicePrefix: 'multica',
           runtimeUserPrefix: 'mca',
           installCommand: 'npm install --no-audit --no-fund',
-          buildCommand:
-            'export NODE_OPTIONS=--max-old-space-size=1536 && pnpm canvas:a2ui:bundle && node scripts/tsdown-build.mjs && node scripts/runtime-postbuild.mjs && node scripts/build-stamp.mjs && node --import tsx scripts/canvas-a2ui-copy.ts && node --import tsx scripts/copy-hook-metadata.ts && node --import tsx scripts/copy-export-html-templates.ts && node --import tsx scripts/write-build-info.ts && node --import tsx scripts/write-cli-startup-metadata.ts && node --import tsx scripts/write-cli-compat.ts',
-          startCommand: 'multica gateway run --allow-unconfigured --bind lan --port "$PORT" --token "$MULTICA_GATEWAY_TOKEN" --force',
+          buildCommand: 'npm run build',
+          startCommand: 'npm run start',
           tokenEnvName: 'COMMUNICATION_TOKEN',
           modelEnvName: 'MULTICA_MODEL_ID',
           channelEnvName: 'MULTICA_CHANNEL_ID',
@@ -220,12 +225,15 @@ function readRawConfig(configPath) {
 
 function normalizeConfig(configPath, rawConfig, encryptionSecret) {
   const configDirectory = dirname(configPath)
+  const defaultArchivePath = '/data/multica/templates/multica-template.tar.gz'
   const provider = rawConfig?.deployment?.provider === 'ssh' ? 'ssh' : 'mock'
   const configuredRepoUrl = normalizeConfiguredValue(rawConfig?.multica?.repoUrl)
   const configuredRepoRef = normalizeConfiguredValue(rawConfig?.multica?.repoRef)
-  const configuredSourceType = rawConfig?.multica?.sourceType === 'archive' ? 'archive' : 'git'
+  const configuredSourceType = rawConfig?.multica?.sourceType === 'git' ? 'git' : 'archive'
   const configuredArchiveUrl = normalizeConfiguredValue(rawConfig?.multica?.archiveUrl)
-  const configuredArchivePath = normalizeConfiguredValue(rawConfig?.multica?.archivePath)
+  const configuredArchivePath =
+    normalizeConfiguredValue(rawConfig?.multica?.archivePath) ||
+    (configuredSourceType === 'archive' && !configuredArchiveUrl ? defaultArchivePath : '')
   const serverHost = firstDefined(
     process.env.MULTICA_DEPLOY_HOST,
     process.env.MULTICA_SERVER_IP,
@@ -250,6 +258,14 @@ function normalizeConfig(configPath, rawConfig, encryptionSecret) {
       rawConfig?.deployment?.routerRoutesDir,
     ),
     '/data/multica/router/routes',
+  )
+  const consolePortBase = parsePositiveInteger(
+    process.env.MULTICA_CONSOLE_PORT_BASE ?? rawConfig?.deployment?.consolePortBase,
+    58000,
+  )
+  const consolePortRange = parsePositiveInteger(
+    process.env.MULTICA_CONSOLE_PORT_RANGE ?? rawConfig?.deployment?.consolePortRange,
+    4000,
   )
   const serverPassword = firstDefined(
     process.env.MULTICA_DEPLOY_ROOT_PASSWORD,
@@ -282,6 +298,8 @@ function normalizeConfig(configPath, rawConfig, encryptionSecret) {
         typeof rawConfig?.deployment?.publicBaseUrl === 'string' && rawConfig.deployment.publicBaseUrl.trim()
           ? rawConfig.deployment.publicBaseUrl.trim()
           : 'https://multica.local',
+      consolePortBase,
+      consolePortRange,
       mockRootDir,
     },
     server: {
@@ -322,11 +340,11 @@ function normalizeConfig(configPath, rawConfig, encryptionSecret) {
       buildCommand:
         typeof rawConfig?.multica?.buildCommand === 'string'
           ? rawConfig.multica.buildCommand.trim()
-          : 'export NODE_OPTIONS=--max-old-space-size=1536 && pnpm canvas:a2ui:bundle && node scripts/tsdown-build.mjs && node scripts/runtime-postbuild.mjs && node scripts/build-stamp.mjs && node --import tsx scripts/canvas-a2ui-copy.ts && node --import tsx scripts/copy-hook-metadata.ts && node --import tsx scripts/copy-export-html-templates.ts && node --import tsx scripts/write-build-info.ts && node --import tsx scripts/write-cli-startup-metadata.ts && node --import tsx scripts/write-cli-compat.ts',
+          : 'npm run build',
       startCommand:
         typeof rawConfig?.multica?.startCommand === 'string'
           ? rawConfig.multica.startCommand.trim()
-          : 'multica gateway run --allow-unconfigured --bind lan --port "$PORT" --token "$MULTICA_GATEWAY_TOKEN" --force',
+          : 'npm run start',
       tokenEnvName:
         typeof rawConfig?.multica?.tokenEnvName === 'string' && rawConfig.multica.tokenEnvName.trim()
           ? rawConfig.multica.tokenEnvName.trim()

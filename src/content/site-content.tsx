@@ -16,6 +16,7 @@ import type {
   CreateUserFormState,
   FaqItem,
   Feature,
+  GuidePage,
   GuideChannel,
   GuideContent,
   LegalSection,
@@ -26,10 +27,13 @@ import type {
 } from '../app-types'
 
 export const supportEmail = 'support@aigeamy.com'
+const upstreamMulticaGithubUrl = 'https://github.com/multica-ai/multica'
+const multicaGuidanceDocsGithubUrl = 'https://github.com/clauxel/multica'
 
 export const navItems: NavItem[] = [
   { href: '#features', label: 'Features', icon: Layers3 },
   { href: '#solutions', label: 'Solutions', icon: Layers3 },
+  { href: '#guides', label: 'Guides', icon: CircleHelp },
   { href: '#compare', label: 'Compare', icon: CircleHelp },
   { href: '#pricing', label: 'Pricing', icon: Rocket },
   { href: '/console', label: 'Console', icon: ServerCog },
@@ -335,6 +339,389 @@ export const faqs: FaqItem[] = [
   },
 ]
 
+export const guidePages: GuidePage[] = [
+  {
+    href: '/guides/multica-project',
+    label: 'Project overview',
+    eyebrow: 'Guide',
+    title: 'What Is the Multica Project? Team Agent Workflow Guide',
+    summary:
+      'A grounded answer to what the Multica project does, where it fits, and what to inspect before adopting it for a team workflow.',
+    definition:
+      'Multica is an open-source, self-hostable platform for human + agent teams. The official site and repository position it as the coordination layer around coding agents: issues, activity timelines, reusable skills, runtimes, and autonomous task execution all live in one system.',
+    keyPoints: [
+      'Multica is not a single coding model. It is the management layer around agents.',
+      'The official repo supports runtimes such as Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, and Cursor Agent.',
+      'The product is built around assignable work, tracked execution, and reusable skills instead of one-off chat prompts.',
+      'The project is open source and self-hostable, so data and runtime control can stay on your own infrastructure.',
+    ],
+    bestFor: [
+      'Engineering teams already experimenting with more than one coding agent',
+      'Founders who want agents to appear inside a real workflow instead of scattered chat threads',
+      'Operators who need assignment, progress visibility, and reusable execution patterns',
+    ],
+    checklist: [
+      'Read the official About page first to understand the “human + agent teammates” framing.',
+      'Verify that the runtimes your team already uses are supported in the daemon flow.',
+      'Decide whether you need the hosted product path, self-hosting, or a launch service like this site.',
+      'Confirm that issue-based coordination fits your team better than chat-only collaboration.',
+    ],
+    watchFor: [
+      'You still need connected runtimes on real machines for agents to execute work.',
+      'If you only need a single personal assistant, Multica may be more system than you actually need.',
+      'The project moves quickly, so evaluate releases and setup docs before rolling it into production.',
+    ],
+    resources: [
+      {
+        label: 'Official homepage',
+        href: 'https://multica.ai/',
+        description: 'Best first stop for the product promise, supported runtimes, and top-level workflow.',
+      },
+      {
+        label: 'About Multica',
+        href: 'https://multica.ai/about',
+        description: 'Useful for understanding the philosophy behind “human + agent teams.”',
+      },
+      {
+        label: 'Guidance docs repo',
+        href: multicaGuidanceDocsGithubUrl,
+        description: 'This repository contains guidance documents and supporting materials for understanding or presenting Multica.',
+      },
+      {
+        label: 'Upstream Multica repo',
+        href: upstreamMulticaGithubUrl,
+        description: 'Read the README, install steps, self-hosting notes, and active release history.',
+      },
+      {
+        label: 'Multica pricing on this site',
+        href: '/guides/multica-pricing',
+        description: 'Use our pricing guide to separate open-source, cloud, and managed launch costs.',
+      },
+    ],
+    conclusion:
+      'Treat Multica as project infrastructure for agentic work, not as just another coding assistant. If your team needs a coordination layer, this is the angle worth evaluating first.',
+    faqs: [
+      {
+        question: 'Is Multica just another coding agent?',
+        answer:
+          'No. The official positioning is closer to a platform for managing human + agent teamwork. The agents still do the execution, while Multica adds assignment, lifecycle tracking, runtimes, and shared skills.',
+      },
+      {
+        question: 'What should I inspect before adopting the project?',
+        answer:
+          'Start with the official About page, then review the GitHub README for supported runtimes, the setup flow, and the self-hosting path. That tells you quickly whether the product matches your team shape.',
+      },
+      {
+        question: 'When is Multica the wrong starting point?',
+        answer:
+          'If your team only needs one assistant in one terminal, a direct tool like Codex, OpenCode, or OpenClaw may be enough. Multica becomes more valuable when coordination and repeatable workflow management are the real problem.',
+      },
+    ],
+  },
+  {
+    href: '/guides/multica-ai',
+    label: 'AI positioning',
+    eyebrow: 'Guide',
+    title: 'What Is Multica AI? Product, Model, or Agent Layer?',
+    summary:
+      'A practical answer to what Multica AI means and how it relates to models, coding agents, chat tools, and runtime orchestration.',
+    definition:
+      'Multica is best understood as the operating layer around coding agents. It handles assignment, progress tracking, skills, and runtimes, while execution can still be powered by tools like Codex, OpenClaw, OpenCode, and other supported providers.',
+    keyPoints: [
+      'Multica is a workflow and orchestration product, not a standalone model vendor.',
+      'Its core abstraction is the agent as teammate: assign work, track status, and reuse skills.',
+      'Execution happens on connected runtimes, which can be local machines or cloud environments you manage.',
+      'The product supports open-source and self-hosted usage, not only a hosted SaaS path.',
+    ],
+    bestFor: [
+      'Teams comparing “agent management” platforms against direct coding assistants',
+      'Buyers who want to know whether Multica replaces or layers on top of existing AI tools',
+      'Founders deciding how to explain Multica in one paragraph without oversimplifying it',
+    ],
+    checklist: [
+      'Decide whether you need a manager layer or just a single coding agent.',
+      'Map which runtimes your team already trusts and whether Multica can route to them.',
+      'Review where your code executes and where team metadata is stored.',
+      'Compare the product against chat-native and terminal-native alternatives before committing.',
+    ],
+    watchFor: [
+      'Calling Multica “an AI model” will confuse buyers because the product is really orchestration plus workflow.',
+      'The hosted product promise and the self-hosted path solve different buying questions.',
+      'If you need pure chat collaboration, a chat-native product may fit better than an issue-centric one.',
+    ],
+    resources: [
+      {
+        label: 'Official homepage',
+        href: 'https://multica.ai/',
+        description: 'Use this to see how Multica presents its core categories: teammates, skills, and runtimes.',
+      },
+      {
+        label: 'About Multica',
+        href: 'https://multica.ai/about',
+        description: 'Best source for the “Multiplexed Information and Computing Agent” framing.',
+      },
+      {
+        label: 'Guidance docs repo',
+        href: multicaGuidanceDocsGithubUrl,
+        description: 'Use this when you want the guidance-document repository around Multica rather than the upstream product source.',
+      },
+      {
+        label: 'Upstream Multica repo',
+        href: upstreamMulticaGithubUrl,
+        description: 'Shows supported runtimes, setup flow, and how the daemon fits into the system.',
+      },
+      {
+        label: 'Download page',
+        href: 'https://multica.ai/download',
+        description: 'Helpful for understanding the desktop, CLI, and runtime setup path.',
+      },
+    ],
+    conclusion:
+      'The shortest accurate description is this: Multica manages AI teammates and the work around them. The models and agent CLIs still matter, but Multica is the layer that makes them operational for teams.',
+    faqs: [
+      {
+        question: 'Does Multica replace tools like Codex or OpenCode?',
+        answer:
+          'Not necessarily. Multica can sit above those tools as the coordination layer. In many teams the question is not “which one wins,” but whether you need both an execution tool and a management layer.',
+      },
+      {
+        question: 'Where does the AI work actually run?',
+        answer:
+          'On connected runtimes. The official repo describes the daemon on your machine as the runtime that executes agent tasks and reports available CLIs back to Multica.',
+      },
+      {
+        question: 'Is Multica cloud-only?',
+        answer:
+          'No. The official site and repo both emphasize self-hosting and open-source usage alongside the hosted product path.',
+      },
+    ],
+  },
+  {
+    href: '/guides/multica-github',
+    label: 'GitHub guide',
+    eyebrow: 'Guide',
+    title: 'How to evaluate Multica on GitHub',
+    summary:
+      'A practical read-through of the repository so you can judge setup, runtime support, release pace, and self-hosting maturity.',
+    definition:
+      'The official GitHub repo is the clearest public artifact for understanding how Multica really works. It shows install commands, daemon setup, supported runtimes, self-hosting notes, release history, and the project’s contributor surface.',
+    keyPoints: [
+      'The README doubles as a product overview and a technical quick-start.',
+      'The repo documents one-command install flows for macOS, Linux, and Windows.',
+      'The daemon auto-detects supported agent CLIs on your PATH, which is central to the product model.',
+      'Release and changelog activity are worth inspecting because the project is shipping quickly.',
+    ],
+    bestFor: [
+      'Technical buyers who need more than a marketing homepage',
+      'Engineers evaluating whether the setup flow is realistic for their environment',
+      'Open-source contributors deciding whether the project is active and legible enough to extend',
+    ],
+    checklist: [
+      'Read the README from top to bottom instead of jumping straight to install.',
+      'Inspect the supported runtime list and confirm it matches your team’s tools.',
+      'Check releases and changelog cadence before treating the current behavior as stable.',
+      'Review self-hosting instructions if infrastructure ownership matters to your team.',
+    ],
+    watchFor: [
+      'GitHub popularity alone is not a production-readiness signal; the setup path matters more.',
+      'The project includes both hosted-product language and self-hosting language, so separate those buying motions.',
+      'Fast-moving repos can make screenshots, blogs, and tutorials age quickly.',
+    ],
+    resources: [
+      {
+        label: 'Guidance docs repo',
+        href: multicaGuidanceDocsGithubUrl,
+        description: 'Inspect this repo if you want the guidance documents, launch notes, and supporting materials around Multica.',
+      },
+      {
+        label: 'Upstream Multica repo',
+        href: upstreamMulticaGithubUrl,
+        description: 'Start here for README, install commands, supported runtimes, and releases.',
+      },
+      {
+        label: 'Multica homepage',
+        href: 'https://multica.ai/',
+        description: 'Use the site to compare the product story with what the repo actually documents.',
+      },
+      {
+        label: 'About Multica',
+        href: 'https://multica.ai/about',
+        description: 'Helpful if you want the philosophy behind the repo, not just the mechanics.',
+      },
+      {
+        label: 'Download page',
+        href: 'https://multica.ai/download',
+        description: 'Useful for the desktop and CLI distribution story.',
+      },
+    ],
+    conclusion:
+      'If you want to understand Multica seriously, the GitHub repo is not optional reading. It tells you whether the product promise survives contact with installation, runtimes, and self-hosting reality.',
+    faqs: [
+      {
+        question: 'Where should I start in the repo?',
+        answer:
+          'Start with the README, then jump to the install and getting-started sections. Only after that should you decide whether to inspect self-hosting, releases, or contributor documentation.',
+      },
+      {
+        question: 'Do I need to self-host to learn from the repo?',
+        answer:
+          'No. You can learn a lot from the README, releases, and daemon flow without running production infrastructure. Self-hosting is only necessary if that ownership model is part of your evaluation.',
+      },
+      {
+        question: 'What is the most important thing to verify in GitHub?',
+        answer:
+          'Verify the runtime story. Multica makes the most sense when the supported CLIs, machine setup, and execution model match the agents your team actually wants to run.',
+      },
+    ],
+  },
+  {
+    href: '/guides/multica-pricing',
+    label: 'Pricing guide',
+    eyebrow: 'Guide',
+    title: 'Understanding Multica pricing',
+    summary:
+      'A plain-language breakdown of open-source cost, hosted access, and this site’s managed launch plans.',
+    definition:
+      'Pricing around Multica is easy to misunderstand because the official project is open source and self-hostable, the official site promotes a hosted product path and free trial, and this website sells fixed managed-launch packages built around deployment capacity.',
+    keyPoints: [
+      'Open source does not mean zero operational cost; self-hosting still means infrastructure, setup, and maintenance.',
+      'The official site points to a free trial, download flow, and cloud runtime waitlist, which is different from a public flat pricing table.',
+      'On this site, Starter is $9/month for 1 Multica instance, Growth is $29/month for 5, and Scale is $79/month for 20.',
+      'A useful pricing conversation should also include runtime, model, token, and maintenance costs instead of only the sticker price.',
+    ],
+    bestFor: [
+      'Buyers deciding whether to start with a managed launch plan or self-host from day one',
+      'Teams trying to translate “open source” into an actual budget discussion',
+      'Anyone comparing the cost of direct agent tools with the cost of a team workflow layer',
+    ],
+    checklist: [
+      'Decide whether you are pricing software access, deployment help, or long-term infrastructure ownership.',
+      'Estimate how many launches or agent instances you actually need in the next 30 to 90 days.',
+      'Add the cost of the underlying model providers and runtime machines to the conversation.',
+      'Use the plan page only after you know whether you want a managed path or a self-hosted one.',
+    ],
+    watchFor: [
+      'Self-hosting can be cheaper in license terms and more expensive in operator time.',
+      'A launch-plan price does not answer every question about downstream token spend or runtime capacity.',
+      'Some buyers over-index on monthly price and underweight speed, reliability, and repeatability.',
+    ],
+    resources: [
+      {
+        label: 'Plans on this site',
+        href: '/plans',
+        description: 'Review the fixed managed-launch plans and choose based on deployment volume.',
+      },
+      {
+        label: 'Homepage pricing section',
+        href: '/#pricing',
+        description: 'Useful if you want to compare cards before entering checkout.',
+      },
+      {
+        label: 'Official Multica homepage',
+        href: 'https://multica.ai/',
+        description: 'Use this to understand the free-trial and hosted-product positioning.',
+      },
+      {
+        label: 'Official Download page',
+        href: 'https://multica.ai/download',
+        description: 'Helpful for understanding the desktop, CLI, and cloud-runtime waitlist path.',
+      },
+    ],
+    conclusion:
+      'The useful way to read “Multica pricing” is not “what is the cheapest number?” but “which path buys the fastest, safest outcome for our team?” This guide is here to help you answer that honestly.',
+    faqs: [
+      {
+        question: 'Is Multica free?',
+        answer:
+          'The official project is open source and self-hostable, but that does not erase infrastructure and operating costs. On this site, the managed launch service is paid because it packages deployment capacity and a guided buyer flow.',
+      },
+      {
+        question: 'What do the plan prices on this site represent?',
+        answer:
+          'They represent managed launch plans tied to deployment capacity. They are useful if you want a faster path to getting Multica live, but they are not the same thing as the total cost of long-term self-hosting or model usage.',
+      },
+      {
+        question: 'What extra costs should I remember?',
+        answer:
+          'Think about model usage, runtime machines, storage, monitoring, and team time. Those costs often matter more over a quarter than the first month of software pricing alone.',
+      },
+    ],
+  },
+  {
+    href: '/guides/coleam00-github',
+    label: 'Cole Medin',
+    eyebrow: 'Guide',
+    title: 'Cole Medin repositories worth knowing',
+    summary:
+      'A short guide to the Coleam00 repositories that matter most if you are mapping the broader agent-workflow ecosystem.',
+    definition:
+      'Cole Medin’s GitHub profile centers on AI agents, RAG, local AI deployments, and workflow tooling. For teams researching the ecosystem around Multica, his repositories are useful reference points for how builders package harnesses, remote coding systems, and persistent assistant patterns.',
+    keyPoints: [
+      'The profile itself describes a focus on AI agents, RAG solutions, local AI deployments, and related libraries.',
+      'Archon is positioned as an open-source harness builder for AI coding workflows.',
+      'remote-agentic-coding-system shows a concrete pattern for connecting coding agents to Slack, Telegram, and GitHub.',
+      'second-brain-starter is valuable when you want memory, security boundaries, and proactive assistant patterns rather than team task routing.',
+    ],
+    bestFor: [
+      'Builders who want practical examples of agent workflow design',
+      'Content teams mapping the agent-tool ecosystem around Multica',
+      'Technical evaluators comparing educational scaffolds with production team platforms',
+    ],
+    checklist: [
+      'Start at the profile and inspect which repos are popular for which reason.',
+      'Read repo READMEs to see whether each project is a workflow engine, a teaching repo, or a deployable system.',
+      'Check prerequisites before treating a repo as an easy drop-in for your stack.',
+      'Translate lessons from these repos into your Multica evaluation instead of assuming they solve the same problem.',
+    ],
+    watchFor: [
+      'Many ecosystem repos are great references but not full replacements for a team coordination platform.',
+      'Some projects assume tools like Claude Code, Docker, GitHub CLI, or messaging bots are already in your stack.',
+      'Popularity on GitHub is useful signal, but not the same as operational fit for your team.',
+    ],
+    resources: [
+      {
+        label: 'Coleam00 profile',
+        href: 'https://github.com/coleam00',
+        description: 'Start here to see the overall focus areas and top repositories.',
+      },
+      {
+        label: 'Archon',
+        href: 'https://github.com/coleam00/Archon',
+        description: 'Best if you want to study workflow harnesses for AI coding.',
+      },
+      {
+        label: 'remote-agentic-coding-system',
+        href: 'https://github.com/coleam00/remote-agentic-coding-system',
+        description: 'Useful for understanding remote coding-agent deployment patterns.',
+      },
+      {
+        label: 'second-brain-starter',
+        href: 'https://github.com/coleam00/second-brain-starter',
+        description: 'A strong reference for memory, boundaries, and proactive assistant design.',
+      },
+    ],
+    conclusion:
+      'Coleam00’s GitHub is worth reading as ecosystem research, not as a one-click answer to every team workflow problem. Use it to sharpen your mental model, then decide whether your need is a harness, a reference architecture, or a coordination platform like Multica.',
+    faqs: [
+      {
+        question: 'Why include Coleam00 on a Multica site?',
+        answer:
+          'Because buyers and builders often research the surrounding ecosystem before choosing a platform. Cole Medin’s repos are influential examples of how people structure AI-agent workflows in practice.',
+      },
+      {
+        question: 'Which repository should I open first?',
+        answer:
+          'If you care about coding workflow structure, start with Archon. If you care about remote messaging-based coding flows, open remote-agentic-coding-system. If you care about memory and proactive assistants, open second-brain-starter.',
+      },
+      {
+        question: 'Does this replace Multica?',
+        answer:
+          'Usually no. These repos are best treated as learning material, workflow tooling, or adjacent building blocks. Multica is closer to a team coordination layer that can sit above or beside that ecosystem.',
+      },
+    ],
+  },
+]
+
 export const solutionPages: SolutionPage[] = [
   {
     href: '/solutions/customer-support',
@@ -480,6 +867,238 @@ export const solutionPages: SolutionPage[] = [
 ]
 
 export const comparisonPages: ComparisonPage[] = [
+  {
+    href: '/compare/codex',
+    label: 'Codex',
+    eyebrow: 'Compare',
+    title: 'Multica vs Codex',
+    summary:
+      'Choose Codex when your main need is a powerful coding agent. Choose Multica when the bigger problem is coordinating multiple agents, runtimes, skills, and task ownership across a team.',
+    alternativeName: 'Codex',
+    chooseLaunch: [
+      'You need a shared board, issue flow, and runtime management layer around agent work',
+      'You want to use Codex as one runtime among multiple providers instead of making one vendor your whole operating model',
+      'You care about reusable skills, assignment visibility, and workflow consistency across more than one agent',
+    ],
+    chooseAlternative: [
+      'You want OpenAI’s coding agent directly, with worktrees, cloud environments, Skills, and Automations built into the product',
+      'Your bottleneck is code execution itself, not team-level coordination',
+      'You do not yet need a separate orchestration layer above the coding agent',
+    ],
+    rows: [
+      {
+        label: 'Primary job',
+        launch: 'Coordinates work across agents, humans, runtimes, assignments, and reusable skills',
+        alternative: 'Executes coding work directly as an OpenAI coding agent and command center',
+      },
+      {
+        label: 'Execution model',
+        launch: 'Routes work to connected runtimes and keeps task state visible to the team',
+        alternative: 'Uses built-in worktrees and cloud environments for agentic coding tasks',
+      },
+      {
+        label: 'Provider strategy',
+        launch: 'Vendor-neutral management layer that can sit above Codex, OpenClaw, OpenCode, and others',
+        alternative: 'OpenAI-native product powered by ChatGPT and OpenAI frontier coding models',
+      },
+      {
+        label: 'Best fit',
+        launch: 'Teams that already have agents and now need coordination and governance',
+        alternative: 'Builders who primarily need one strong coding agent to do the work',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can Multica and Codex work together?',
+        answer:
+          'Yes. The official Multica repository documents Codex as a supported runtime, so a common pattern is to use Codex for execution and Multica for team coordination.',
+      },
+      {
+        question: 'When should I start with Codex first?',
+        answer:
+          'Start with Codex if you are still validating whether one strong coding agent changes your workflow. Add Multica later when multiple agents, skills, or team coordination start to create real overhead.',
+      },
+      {
+        question: 'What does Multica add beyond Codex?',
+        answer:
+          'It adds the management layer: assignable work, runtime visibility, shared skills, and a single operating surface for teams using more than one agent or more than one provider.',
+      },
+    ],
+  },
+  {
+    href: '/compare/slock-ai',
+    label: 'Slock AI',
+    eyebrow: 'Compare',
+    title: 'Multica vs Slock AI',
+    summary:
+      'Choose Slock AI when your workflow should live inside channels and DMs. Choose Multica when work should live in issues, assignees, skills, and runtime operations.',
+    alternativeName: 'Slock AI',
+    chooseLaunch: [
+      'You want issue-centric execution, explicit task ownership, and a clearer operational surface',
+      'You need vendor-neutral runtime management rather than one chat-first collaboration layer',
+      'You want skills, deployment decisions, and repeat launches attached to a project workflow',
+    ],
+    chooseAlternative: [
+      'You want humans and agents collaborating as equals in channels and direct messages',
+      'Persistent memory inside chat is more important than project-board structure',
+      'Your mental model is “chat workspace for humans + agents,” not “issue system for humans + agents”',
+    ],
+    rows: [
+      {
+        label: 'Primary interface',
+        launch: 'Board, issues, assignments, status changes, and runtimes',
+        alternative: 'Channels and DMs where humans and agents collaborate in real time',
+      },
+      {
+        label: 'Work unit',
+        launch: 'Tracked tasks with lifecycle and ownership',
+        alternative: 'Ongoing conversations with memory across sessions',
+      },
+      {
+        label: 'Runtime story',
+        launch: 'Connected runtimes plus provider flexibility across supported agent CLIs',
+        alternative: 'Agents run on your own computers via a lightweight daemon',
+      },
+      {
+        label: 'Best fit',
+        launch: 'Teams that want project management for agent work',
+        alternative: 'Teams that want chat-native collaboration with agent teammates',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Is Slock AI a direct replacement for Multica?',
+        answer:
+          'Usually not. They optimize for different centers of gravity. Slock AI is chat-first, while Multica is issue-and-runtime-first.',
+      },
+      {
+        question: 'When is Slock AI the better choice?',
+        answer:
+          'It is the better choice when the conversation itself is the product and you want agents living beside humans inside channels and DMs all day.',
+      },
+      {
+        question: 'When does Multica win?',
+        answer:
+          'Multica wins when your team needs explicit task ownership, reusable skills, and a stronger operational model around how agents execute work.',
+      },
+    ],
+  },
+  {
+    href: '/compare/openclaw',
+    label: 'OpenClaw',
+    eyebrow: 'Compare',
+    title: 'Multica vs OpenClaw',
+    summary:
+      'Choose OpenClaw when you want a local-first personal AI assistant. Choose Multica when you need a shared management layer for agent work across a team. In many stacks they are complements, not substitutes.',
+    alternativeName: 'OpenClaw',
+    chooseLaunch: [
+      'You need assignments, runtime visibility, skills, and task tracking across multiple agents or teammates',
+      'You want a platform that can manage OpenClaw as one provider among several',
+      'You care more about workflow coordination than about one assistant handling everything directly',
+    ],
+    chooseAlternative: [
+      'You want your own personal AI assistant on your own machines',
+      'Local-first control and direct assistant behavior matter more than team project structure',
+      'You want the assistant product itself, not a higher-level orchestration layer around many assistants',
+    ],
+    rows: [
+      {
+        label: 'Primary job',
+        launch: 'Manage agent teamwork, issues, skills, and runtimes',
+        alternative: 'Act as a personal AI assistant across your devices and platforms',
+      },
+      {
+        label: 'Typical user',
+        launch: 'A team coordinating work among humans and multiple agents',
+        alternative: 'An individual or operator who wants one powerful assistant',
+      },
+      {
+        label: 'Provider relationship',
+        launch: 'Can use OpenClaw as a supported runtime according to the official Multica repo',
+        alternative: 'Is itself the assistant/runtime product',
+      },
+      {
+        label: 'Best fit',
+        launch: 'Project coordination and repeatable agent operations',
+        alternative: 'Local-first assistant use and direct task execution',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Are OpenClaw and Multica competitors?',
+        answer:
+          'Partly, but often they are layered. The official Multica repo lists OpenClaw as a supported runtime, so some teams use OpenClaw for execution and Multica for coordination.',
+      },
+      {
+        question: 'When should I start with OpenClaw alone?',
+        answer:
+          'Start with OpenClaw if your main need is a capable assistant on your own machines. Add Multica later if you outgrow personal assistant workflows and need team coordination.',
+      },
+      {
+        question: 'What is the real difference in one sentence?',
+        answer:
+          'OpenClaw is the assistant; Multica is the work system around assistants.',
+      },
+    ],
+  },
+  {
+    href: '/compare/opencode',
+    label: 'OpenCode',
+    eyebrow: 'Compare',
+    title: 'Multica vs OpenCode',
+    summary:
+      'Choose OpenCode when your team wants a terminal-native coding agent with broad provider choice and strong privacy defaults. Choose Multica when you need an orchestration layer above coding agents.',
+    alternativeName: 'OpenCode',
+    chooseLaunch: [
+      'You need one place to coordinate multiple agents, assignments, and reusable skills',
+      'You want OpenCode to be one runtime inside a bigger operating model instead of the whole product surface',
+      'You care about project-level visibility more than terminal-level ergonomics alone',
+    ],
+    chooseAlternative: [
+      'You want an open-source coding agent in the terminal, IDE, or desktop',
+      'You want broad provider flexibility, privacy-first positioning, and direct coding workflow speed',
+      'A solo or small-team coding agent is enough and a management layer would be unnecessary overhead',
+    ],
+    rows: [
+      {
+        label: 'Primary job',
+        launch: 'Coordinate work across agents and runtimes for a team',
+        alternative: 'Help developers write code directly in terminal, IDE, or desktop',
+      },
+      {
+        label: 'Provider model',
+        launch: 'Vendor-neutral management layer that can route to supported runtimes including OpenCode',
+        alternative: 'Connects to many providers and offers optional OpenCode-managed subscriptions like Go',
+      },
+      {
+        label: 'Privacy story',
+        launch: 'Depends on how you deploy Multica and where your runtimes live',
+        alternative: 'Official docs emphasize that OpenCode does not store your code or context data by default',
+      },
+      {
+        label: 'Best fit',
+        launch: 'Teams coordinating many agents or repeatable multi-step work',
+        alternative: 'Developers who want a fast, open-source coding agent environment',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Can OpenCode be used inside Multica?',
+        answer:
+          'Yes. The official Multica repo documents OpenCode as a supported runtime, which makes the combination a natural fit for teams that like OpenCode but need more coordination.',
+      },
+      {
+        question: 'When is OpenCode enough on its own?',
+        answer:
+          'OpenCode is often enough when the main need is code generation, editing, or debugging from a terminal or IDE, especially for solo developers or very small teams.',
+      },
+      {
+        question: 'Why would I add Multica above OpenCode?',
+        answer:
+          'Because once multiple agents, skills, runtimes, and teammates get involved, the management problem becomes separate from the coding problem. That is where Multica adds value.',
+      },
+    ],
+  },
   {
     href: '/compare/self-hosted-deployment',
     label: 'Self-hosted Deployment',

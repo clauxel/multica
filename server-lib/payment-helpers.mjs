@@ -303,23 +303,18 @@ export function createPaymentHelpers({
     return `${creemIsTestMode ? 'test' : 'live'}:${orderPricing.planId}:${order.model_id}:${orderPricing.amountCents}:${orderPricing.currency}`
   }
 
-  async function ensureCreemProductForOrder(order, request) {
-    const orderPricing = resolveOrderPricing(order)
-    const lookupKey = getCreemProductLookupKey(orderPricing, order)
-    const existingProduct = await findCreemProductStatement.get(lookupKey)
-    if (existingProduct) {
-      return existingProduct.product_id
-    }
-
-    const productName = `Multica ${orderPricing.plan.name} ${orderPricing.billingCycle === 'annual' ? 'Annual' : 'Monthly'}`
+  async function createCreemProductForOrder(order, request, orderPricing) {
+    const resolvedOrderPricing = orderPricing ?? resolveOrderPricing(order)
+    const lookupKey = getCreemProductLookupKey(resolvedOrderPricing, order)
+    const productName = `Multica ${resolvedOrderPricing.plan.name} ${resolvedOrderPricing.billingCycle === 'annual' ? 'Annual' : 'Monthly'}`
     const returnOrigin = getCreemReturnOrigin(request)
     const createdProduct = await creemRequest('/v1/products', {
       method: 'POST',
       body: {
         name: productName,
-        description: `${orderPricing.plan.subtitle} · ${orderPricing.priceLabel}`,
-        price: orderPricing.amountCents,
-        currency: orderPricing.currency,
+        description: `${resolvedOrderPricing.plan.subtitle} · ${resolvedOrderPricing.priceLabel}`,
+        price: resolvedOrderPricing.amountCents,
+        currency: resolvedOrderPricing.currency,
         billing_type: 'onetime',
         tax_mode: 'inclusive',
         tax_category: 'saas',
@@ -335,8 +330,8 @@ export function createPaymentHelpers({
     await upsertCreemProductStatement.run(
       lookupKey,
       createdProduct.id,
-      orderPricing.amountCents,
-      orderPricing.currency,
+      resolvedOrderPricing.amountCents,
+      resolvedOrderPricing.currency,
       timestamp,
       timestamp,
     )
@@ -344,31 +339,65 @@ export function createPaymentHelpers({
     return createdProduct.id
   }
 
+  async function ensureCreemProductForOrder(order, request, { forceRefresh = false } = {}) {
+    const orderPricing = resolveOrderPricing(order)
+    const lookupKey = getCreemProductLookupKey(orderPricing, order)
+    const existingProduct = forceRefresh ? null : await findCreemProductStatement.get(lookupKey)
+    if (existingProduct?.product_id) {
+      return existingProduct.product_id
+    }
+
+    return await createCreemProductForOrder(order, request, orderPricing)
+  }
+
+  function isCreemProductNotFoundError(error) {
+    if (!(error instanceof HttpError) || error.statusCode !== 502) {
+      return false
+    }
+
+    return String(error.message ?? '').toLowerCase().includes('product not found')
+  }
+
   async function createCreemCheckoutForOrder(order, request) {
-    const productId = await ensureCreemProductForOrder(order, request)
+    let productId = await ensureCreemProductForOrder(order, request)
     const orderOwner = await findUserByIdStatement.get(order.user_id)
     const returnOrigin = getCreemReturnOrigin(request)
     const guestTokenQuery = order.guest_token ? `&guest_token=${encodeURIComponent(order.guest_token)}` : ''
 
-    return await creemRequest('/v1/checkouts', {
-      method: 'POST',
-      body: {
-        product_id: productId,
-        request_id: order.id,
-        success_url: `${returnOrigin}/console?order=${order.id}${guestTokenQuery}`,
-        customer:
-          orderOwner && orderOwner.email !== guestUserEmail
-            ? {
-                email: orderOwner.email,
-              }
-            : undefined,
-        metadata: {
-          orderId: order.id,
-          orderNumber: order.order_number,
-          planId: order.plan_id,
-        },
+    const buildCheckoutRequestBody = () => ({
+      product_id: productId,
+      request_id: order.id,
+      success_url: `${returnOrigin}/console?order=${order.id}${guestTokenQuery}`,
+      customer:
+        orderOwner && orderOwner.email !== guestUserEmail
+          ? {
+              email: orderOwner.email,
+            }
+          : undefined,
+      metadata: {
+        orderId: order.id,
+        orderNumber: order.order_number,
+        planId: order.plan_id,
       },
     })
+
+    try {
+      return await creemRequest('/v1/checkouts', {
+        method: 'POST',
+        body: buildCheckoutRequestBody(),
+      })
+    } catch (error) {
+      if (!isCreemProductNotFoundError(error)) {
+        throw error
+      }
+
+      productId = await ensureCreemProductForOrder(order, request, { forceRefresh: true })
+
+      return await creemRequest('/v1/checkouts', {
+        method: 'POST',
+        body: buildCheckoutRequestBody(),
+      })
+    }
   }
 
   function verifyCreemRedirectSignature(params) {

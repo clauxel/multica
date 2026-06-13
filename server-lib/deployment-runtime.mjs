@@ -54,6 +54,14 @@ function deriveConsolePort(seed, basePort = 18000, range = 20000) {
   return basePort + (parseInt(deriveStableSuffix(normalizedSeed), 16) % range)
 }
 
+function deriveConfiguredConsolePort(config, seed) {
+  const configuredBasePort = Number.parseInt(String(config?.deployment?.consolePortBase ?? ''), 10)
+  const configuredRange = Number.parseInt(String(config?.deployment?.consolePortRange ?? ''), 10)
+  const basePort = Number.isInteger(configuredBasePort) && configuredBasePort > 0 ? configuredBasePort : 18000
+  const range = Number.isInteger(configuredRange) && configuredRange > 0 ? configuredRange : 20000
+  return deriveConsolePort(seed, basePort, range)
+}
+
 function buildRuntimeUserName(prefix, instanceName) {
   const normalizedPrefix = sanitizeIdentifier(prefix, 'mca', 10)
   const instanceStem = sanitizeIdentifier(instanceName, 'instance', 10)
@@ -302,7 +310,7 @@ function normalizeStartupCommand(command) {
   const normalized = String(command ?? '').trim()
 
   if (!normalized) {
-    return 'multica gateway run --allow-unconfigured --bind lan --port "$PORT" --token "$MULTICA_GATEWAY_TOKEN" --force'
+    return 'npm run start'
   }
 
   if (
@@ -356,7 +364,7 @@ function buildPlan(config, context) {
   const workspacePath = `${stripTrailingSlash(config.multica.baseDir)}/instances/${context.instanceName}`
   const appPath = `${workspacePath}/app`
   const envPath = `${workspacePath}/.env`
-  const consolePort = config.provider === 'ssh' ? deriveConsolePort(context.instanceName) : null
+  const consolePort = config.provider === 'ssh' ? deriveConfiguredConsolePort(config, context.instanceName) : null
   const consoleUrl =
     consolePort !== null
       ? buildConsoleAccessUrl(config, context.instanceName, consolePort)
@@ -456,7 +464,7 @@ function buildLifecyclePlan(config, context) {
   const serviceName =
     context.serviceName ||
     buildServiceName(config.multica.servicePrefix, context.instanceName)
-  let consolePort = config.provider === 'ssh' ? deriveConsolePort(context.instanceName) : null
+  let consolePort = config.provider === 'ssh' ? deriveConfiguredConsolePort(config, context.instanceName) : null
 
   if (context.consoleUrl) {
     try {
@@ -653,7 +661,7 @@ After=network.target
 Type=simple
 User=${plan.runtimeUser}
 Group=${plan.runtimeUser}
-WorkingDirectory=${plan.workspacePath}
+WorkingDirectory=${plan.appPath}
 EnvironmentFile=${plan.envPath}
 Environment=HOME=${plan.workspacePath}
 Environment=XDG_CACHE_HOME=${plan.workspacePath}/.cache
@@ -712,7 +720,7 @@ function readArchivePath(config) {
 }
 
 function resolveDeploymentSource(config) {
-  const sourceType = config?.multica?.sourceType === 'archive' ? 'archive' : 'git'
+  const sourceType = config?.multica?.sourceType === 'git' ? 'git' : 'archive'
 
   if (sourceType === 'archive') {
     const archivePath = readArchivePath(config)
@@ -734,7 +742,7 @@ function describeDeploymentConfig(config) {
   return [
     `configPath=${config?.path ?? '<default>'}`,
     `provider=${config?.provider ?? '<unknown>'}`,
-    `sourceType=${config?.multica?.sourceType ?? 'git'}`,
+    `sourceType=${config?.multica?.sourceType ?? 'archive'}`,
     `repoUrl=${String(config?.multica?.repoUrl ?? '').trim() || '<empty>'}`,
     `repoRef=${String(config?.multica?.repoRef ?? '').trim() || '<empty>'}`,
     `archiveUrl=${String(config?.multica?.archiveUrl ?? '').trim() || '<empty>'}`,
@@ -929,9 +937,6 @@ if [ -n "$AUTH_PROFILES_B64" ]; then
 fi
 su -s /bin/bash "$RUNTIME_USER" -c "$DEPLOY_ENV_PREFIX cd ${shellEscape(plan.appPath)} && $INSTALL_COMMAND"
 su -s /bin/bash "$RUNTIME_USER" -c "$DEPLOY_ENV_PREFIX cd ${shellEscape(plan.appPath)} && $BUILD_COMMAND"
-if ! command -v multica >/dev/null 2>&1; then
-  npm install -g multica
-fi
 printf '%s' "$SERVICE_B64" | base64 -d > "/etc/systemd/system/$SERVICE_NAME.service"
 chmod 644 "/etc/systemd/system/$SERVICE_NAME.service"
 systemctl daemon-reload
@@ -1523,7 +1528,7 @@ export async function executeConfiguredDeployment(config, context) {
   try {
     if (!hasDeploymentServerCredentials(config)) {
       throw new Error(
-        'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_DEPLOY_PRIVATE_KEY_PATH.',
+        'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_AGENT_DEPLOY_PRIVATE_KEY_PATH.',
       )
     }
 
@@ -1560,7 +1565,7 @@ export async function upgradeConfiguredDeployment(config, context) {
 
   if (!hasDeploymentServerCredentials(config)) {
     throw new Error(
-      'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_DEPLOY_PRIVATE_KEY_PATH.',
+      'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_AGENT_DEPLOY_PRIVATE_KEY_PATH.',
     )
   }
 
@@ -1599,7 +1604,7 @@ export async function stopConfiguredDeployment(config, context) {
 
   if (!hasDeploymentServerCredentials(config)) {
     throw new Error(
-      'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_DEPLOY_PRIVATE_KEY_PATH.',
+      'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_AGENT_DEPLOY_PRIVATE_KEY_PATH.',
     )
   }
 
@@ -1630,7 +1635,7 @@ export async function uninstallConfiguredDeployment(config, context) {
 
   if (!hasDeploymentServerCredentials(config)) {
     throw new Error(
-      'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_DEPLOY_PRIVATE_KEY_PATH.',
+      'Deployment server credentials are missing in the active environment file. Set MULTICA_DEPLOY_ROOT_PASSWORD or MULTICA_AGENT_DEPLOY_PRIVATE_KEY_PATH.',
     )
   }
 

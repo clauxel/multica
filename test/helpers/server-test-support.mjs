@@ -46,6 +46,7 @@ export async function startTestServer({
     MULTICA_CONFIG_PATH: configPath,
     MULTICA_POSTGRES_DRIVER: 'memory',
     MULTICA_POSTGRES_MEMORY_ID: memoryId,
+    MULTICA_DEPLOYMENT_MODE: 'automatic',
     MULTICA_TOKEN_SECRET: env.MULTICA_TOKEN_SECRET ?? 'test-secret',
     ...env,
   })

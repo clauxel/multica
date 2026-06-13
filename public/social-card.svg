@@ -1,0 +1,24 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" rx="36" fill="#091015"/>
+  <rect x="36" y="36" width="1128" height="558" rx="28" fill="url(#bg)"/>
+  <rect x="86" y="86" width="84" height="84" rx="20" fill="#0B151A" stroke="#9AE34A" stroke-width="2"/>
+  <path d="M104 148V107H119L128 126L137 107H152V148H141V123L130 144H126L115 123V148H104Z" fill="#C9F29A"/>
+  <text x="198" y="120" fill="#F0F5E9" font-size="40" font-family="Space Grotesk, Arial, sans-serif" font-weight="700">Multica</text>
+  <text x="198" y="156" fill="#95A79A" font-size="22" font-family="IBM Plex Mono, Arial, sans-serif">Multi-agent collaboration for real workflows</text>
+  <text x="86" y="306" fill="#F0F5E9" font-size="72" font-family="Space Grotesk, Arial, sans-serif" font-weight="700">
+    <tspan x="86" dy="0">Run, compare, and coordinate</tspan>
+    <tspan x="86" dy="88">multiple AI agents in parallel.</tspan>
+  </text>
+  <text x="90" y="492" fill="#A9B7AB" font-size="28" font-family="IBM Plex Mono, Arial, sans-serif">
+    Launch side-by-side execution, keep outputs in one workflow, and stay in control as teams scale.
+  </text>
+  <circle cx="1020" cy="178" r="118" fill="#183020" fill-opacity="0.65"/>
+  <circle cx="1084" cy="266" r="84" fill="#2D5E24" fill-opacity="0.5"/>
+  <circle cx="956" cy="266" r="54" fill="#9AE34A" fill-opacity="0.22"/>
+  <defs>
+    <linearGradient id="bg" x1="36" y1="36" x2="1164" y2="594" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A151D"/>
+      <stop offset="1" stop-color="#12281A"/>
+    </linearGradient>
+  </defs>
+</svg>

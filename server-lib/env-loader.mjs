@@ -67,6 +67,14 @@ export function loadLocalEnvironment({
   environment = process.env,
   explicitEnvPath = environment.MULTICA_ENV_PATH ?? '',
 }) {
+  if (
+    environment.VERCEL ||
+    environment.MULTICA_SERVERLESS_API === 'true' ||
+    environment.MULTICA_DISABLE_LOCAL_ENV === 'true'
+  ) {
+    return []
+  }
+
   const protectedKeys = new Set(Object.keys(environment))
   const explicitPaths = explicitEnvPath
     .split(delimiter)

@@ -85,6 +85,17 @@ export function createOrderRoutes(deps) {
     paymentProvider,
   } = deps
 
+  const usesManualDeploymentMode = process.env.MULTICA_DEPLOYMENT_MODE === 'manual'
+  const paymentConfirmedMessage = usesManualDeploymentMode
+    ? 'Payment confirmed. Your Multica is in the provisioning queue.'
+    : 'Payment confirmed. Deployment queue started.'
+  const payPalConfirmedMessage = usesManualDeploymentMode
+    ? 'PayPal payment confirmed. Your Multica is in the provisioning queue.'
+    : 'PayPal payment confirmed. Deployment queue started.'
+  const creemConfirmedMessage = usesManualDeploymentMode
+    ? 'Creem payment confirmed. Your Multica is in the provisioning queue.'
+    : 'Creem payment confirmed. Deployment queue started.'
+
   function resolveOrderAmountCents(planSelection, authContext) {
     const isConfiguredAdminBuyer =
       appEnvironment === 'production' &&
@@ -346,7 +357,7 @@ export function createOrderRoutes(deps) {
       const paidOrder = await capturePayPalOrder(order, body.paypalOrderId ?? order.paypal_order_id)
 
       sendJson(response, 200, {
-        message: 'PayPal payment confirmed. Deployment queue started.',
+        message: payPalConfirmedMessage,
         order: await serializeOrder(paidOrder),
       })
     }),
@@ -466,7 +477,7 @@ export function createOrderRoutes(deps) {
       await queuePaidOrder(order)
 
       sendJson(response, 200, {
-        message: 'Creem payment confirmed. Deployment queue started.',
+        message: creemConfirmedMessage,
         order: await serializeOrder(await findOrderByIdStatement.get(order.id)),
       })
     }),
@@ -485,7 +496,7 @@ export function createOrderRoutes(deps) {
       await queuePaidOrder(order)
 
       sendJson(response, 200, {
-        message: 'Payment confirmed. Deployment queue started.',
+        message: paymentConfirmedMessage,
         order: await serializeOrder(await findOrderByIdStatement.get(order.id)),
       })
     }),

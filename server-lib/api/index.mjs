@@ -3,6 +3,7 @@ import { createAnalyticsRoutes } from './analytics-routes.mjs'
 import { createAuthRoutes } from './auth-routes.mjs'
 import { createCatalogRoutes } from './catalog-routes.mjs'
 import { createModelProxyRoutes } from './model-proxy-routes.mjs'
+import { createNowPaymentsRoutes } from './nowpayments-routes.mjs'
 import { createOrderRoutes } from './order-routes.mjs'
 import { matchRoute } from './route-utils.mjs'
 import { createWebhookRoutes } from './webhook-routes.mjs'
@@ -14,6 +15,7 @@ export function createApiRouter(deps) {
     ...createCatalogRoutes(deps),
     ...createWebhookRoutes(deps),
     ...createAnalyticsRoutes(deps),
+    ...createNowPaymentsRoutes(deps),
     ...createOrderRoutes(deps),
     ...createAdminRoutes(deps),
   ]

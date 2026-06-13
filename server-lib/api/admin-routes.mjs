@@ -92,10 +92,6 @@ export function createAdminRoutes(deps) {
         throw new HttpError(404, 'Order not found.')
       }
 
-      if (!order.user_id || order.user_id !== context.user.id) {
-        throw new HttpError(403, 'You can only delete Multica instances that belong to your own account.')
-      }
-
       const updatedOrder = await uninstallMulticaInstance(order)
       sendJson(response, 200, {
         message: 'Multica deleted successfully.',

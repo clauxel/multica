@@ -7,11 +7,11 @@ import {
 
 test('buildInternalModelProxyBaseUrl 优先使用显式 internal base url', () => {
   const baseUrl = buildInternalModelProxyBaseUrl('demo-instance', {
-    MULTICA_MODEL_PROXY_INTERNAL_BASE_URL: 'http://10.128.0.2:5173/api/internal/model-proxy',
-    PORT: '5173',
+    MULTICA_MODEL_PROXY_INTERNAL_BASE_URL: 'http://10.128.0.2:5175/api/internal/model-proxy',
+    PORT: '5175',
   })
 
-  assert.equal(baseUrl, 'http://10.128.0.2:5173/api/internal/model-proxy/demo-instance/v1')
+  assert.equal(baseUrl, 'http://10.128.0.2:5175/api/internal/model-proxy/demo-instance/v1')
 })
 
 test('isAllowedModelProxyRemoteAddress 默认只允许回环，并支持显式远端白名单', () => {

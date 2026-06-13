@@ -131,7 +131,6 @@ export function createSerializationHelpers({
     const canAdminDeleteMultica =
       viewerContext?.kind === 'user' &&
       viewerContext.user?.role === 'admin' &&
-      row.user_id === viewerContext.user.id &&
       Boolean(instance)
 
     return {

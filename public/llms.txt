@@ -1,0 +1,25 @@
+# Multica
+
+Updated: 2026-06-12
+Canonical: https://multica.uk/
+Support: support@aigeamy.com
+
+## Summary
+Multica is a Multi-agent deployment workspace for teams coordinating Telegram and multi-channel AI agents. It helps users get a clearer launch path for multi-agent channels, pricing, checkout, and operational handoff.
+
+## Core pages
+- Home: https://multica.uk/
+- Pricing: https://multica.uk/pricing/
+- Checkout fallback: https://multica.uk/checkout/
+- Privacy: https://multica.uk/privacy/
+- Terms: https://multica.uk/terms/
+
+## Traffic intent pages
+- multica telegram: https://multica.uk/multica-telegram/ - Multica Telegram Agent Workspace
+- multi ca: https://multica.uk/multi-ca-agent-workspace/ - Multi CA Agent Workspace Guide
+
+## Pricing anchors
+- Starter: $19/mo public planning anchor
+- Growth: $49/mo public planning anchor
+- Scale: $149/mo public planning anchor
+

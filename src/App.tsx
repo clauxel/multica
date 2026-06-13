@@ -29,6 +29,7 @@ import {
   getGuestTokenFromPath,
   loadPayPalSdk,
   openHostedCheckout,
+  openHostedCheckoutPlaceholder,
 } from './lib/api'
 import { initializeAnalytics, syncAnalyticsPage, trackAnalyticsEvent } from './lib/analytics'
 import {
@@ -58,6 +59,7 @@ import {
   comparisonPages,
   faqs,
   features,
+  guidePages,
   guideContent,
   initialAuthForm,
   initialCreateUserForm,
@@ -72,13 +74,33 @@ import {
 } from './content/site-content'
 import { DiscordLogo, MulticaLaunchLogo, TelegramLogo, WhatsAppLogo } from './components/logos'
 
-function isDeploymentInProgress(status: string | null | undefined) {
-  return status === 'queued' || status === 'provisioning'
+type StatelessCheckoutResponse = {
+  ok?: boolean
+  message?: string
+  checkoutUrl?: string
+  paymentProvider?: 'nowpayments'
+  orderId?: string
+}
+
+function isDeploymentQueued(status: string | null | undefined) {
+  return status === 'queued'
+}
+
+function isDeploymentRunning(status: string | null | undefined) {
+  return status === 'provisioning'
+}
+
+function isDeploymentPending(status: string | null | undefined) {
+  return isDeploymentQueued(status) || isDeploymentRunning(status)
 }
 
 const defaultChannelId = 'whatsapp'
 
 function formatDeploymentMessage(message: string | null | undefined, status: string | null | undefined) {
+  if (status === 'queued') {
+    return 'Payment confirmed. Due to high demand, your instance is in the provisioning queue. We will notify you via email when it is ready.'
+  }
+
   const normalized = String(message ?? '')
     .replace(/\s+/g, ' ')
     .replace(/^Deployment failed:\s*/i, '')
@@ -124,6 +146,7 @@ function App() {
   const [currentSearch, setCurrentSearch] = useState(() => window.location.search)
   const [currentHash, setCurrentHash] = useState(() => window.location.hash)
   const [appEnvironment, setAppEnvironment] = useState<'development' | 'production'>('production')
+  const [deploymentMode, setDeploymentMode] = useState<'automatic' | 'manual'>('automatic')
   const [publicAppOrigin, setPublicAppOrigin] = useState(() => window.location.origin)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [headerCompact, setHeaderCompact] = useState(() => window.scrollY > 18)
@@ -250,6 +273,11 @@ function App() {
     [normalizedPathname],
   )
 
+  const activeGuidePage = useMemo(
+    () => guidePages.find((page) => page.href === normalizedPathname) ?? null,
+    [normalizedPathname],
+  )
+
   const activeComparisonPage = useMemo(
     () => comparisonPages.find((page) => page.href === normalizedPathname) ?? null,
     [normalizedPathname],
@@ -302,10 +330,12 @@ function App() {
     void apiRequest<RuntimeResponse>('/api/runtime')
       .then((payload) => {
         setAppEnvironment(payload.environment)
+        setDeploymentMode(payload.deploymentMode)
         setPublicAppOrigin(payload.publicAppOrigin || window.location.origin)
       })
       .catch(() => {
         setAppEnvironment('production')
+        setDeploymentMode('automatic')
         setPublicAppOrigin(window.location.origin)
       })
   }, [])
@@ -313,15 +343,12 @@ function App() {
   useEffect(() => {
     const seo = buildSeoDocument({
       pathname: normalizedPathname,
-      routeView,
       publicAppOrigin,
       supportEmail,
-      solutionPage: activeSolutionPage,
-      comparisonPage: activeComparisonPage,
     })
 
     syncSeoDocument(seo)
-  }, [activeComparisonPage, activeSolutionPage, normalizedPathname, publicAppOrigin, routeView])
+  }, [normalizedPathname, publicAppOrigin])
 
   useEffect(() => {
     const handlePopState = () => {
@@ -363,7 +390,7 @@ function App() {
   }, [currentPathname, currentHash, currentSearch])
 
   useEffect(() => {
-    const sectionHrefs = ['#features', '#solutions', '#compare', '#pricing', '#faq']
+    const sectionHrefs = ['#features', '#solutions', '#guides', '#compare', '#pricing', '#faq']
 
     if (routeView === 'console') {
       setActiveNavHref('/console')
@@ -372,6 +399,11 @@ function App() {
 
     if (routeView === 'compare') {
       setActiveNavHref('#compare')
+      return
+    }
+
+    if (routeView === 'guide') {
+      setActiveNavHref('#guides')
       return
     }
 
@@ -724,6 +756,17 @@ function App() {
     })
   }
 
+  const createStatelessCheckoutSession = async (planId: string) => {
+    return await apiRequest<StatelessCheckoutResponse>('/api/nowpayments-checkout', {
+      method: 'POST',
+      body: JSON.stringify({
+        planId,
+        modelId: selectedModel.id,
+        source: 'plans',
+      }),
+    })
+  }
+
   const handlePlanSelect = (planId: string) => {
     trackAnalyticsEvent({
       eventType: 'business',
@@ -736,15 +779,47 @@ function App() {
     setSelectedPlanId(planId)
   }
 
-  const handlePlanLaunch = async () => {
+  const handlePlanLaunch = async (provider: 'creem' | 'nowpayments' = 'creem') => {
     if (!selectedChannel) {
       setStatusMessage('Choose the first live channel for this deployment before checkout.')
       return
     }
 
+    setStatusMessage('')
+    const hostedCheckoutWindow = openHostedCheckoutPlaceholder()
+    const closeHostedCheckoutWindow = () => {
+      if (hostedCheckoutWindow && !hostedCheckoutWindow.closed) {
+        hostedCheckoutWindow.close()
+      }
+    }
+
     setLaunchSubmitting(true)
 
     try {
+      if (provider === 'nowpayments') {
+        const checkoutResponse = await createStatelessCheckoutSession(`${selectedPlan.id}:${billingCycle}`)
+        if (!checkoutResponse.checkoutUrl) {
+          throw new Error(checkoutResponse.message || 'USDC wallet checkout is unavailable.')
+        }
+        const opened = openHostedCheckout(checkoutResponse.checkoutUrl, hostedCheckoutWindow)
+        trackAnalyticsEvent({
+          eventType: 'business',
+          eventName: 'checkout_started',
+          metadata: {
+            planId: `${selectedPlan.id}:${billingCycle}`,
+            billingCycle,
+            paymentProvider: 'nowpayments',
+            popupMode: opened ? 'popup' : 'redirect',
+          },
+        })
+        if (opened) {
+          setStatusMessage('USDC wallet checkout opened in a new window. Complete payment there while this page stays here.')
+        } else {
+          window.location.assign(checkoutResponse.checkoutUrl)
+        }
+        return
+      }
+
       const launchResponse = await createLaunchOrder(selectedPlan.id)
       trackAnalyticsEvent({
         eventType: 'business',
@@ -772,6 +847,7 @@ function App() {
       setCheckoutOrder(checkoutResponse.order)
 
       if (checkoutResponse.order.paymentStatus === 'paid') {
+        closeHostedCheckoutWindow()
         setConsoleFlashMessage(checkoutResponse.message)
         await loadConsoleData()
         navigate(checkoutResponse.order.consolePath)
@@ -779,10 +855,11 @@ function App() {
       }
 
       clearLaunchDraft()
-      if (continueWithHostedCheckout(checkoutResponse)) {
+      if (continueWithHostedCheckout(checkoutResponse, { popup: hostedCheckoutWindow, stayOnCurrentPage: true })) {
         return
       }
 
+      closeHostedCheckoutWindow()
       setStatusMessage(checkoutResponse.message)
 
       if (!checkoutResponse.paypalOrderId || !checkoutResponse.paypalClientId) {
@@ -797,7 +874,6 @@ function App() {
         throw new Error('Payment checkout is unavailable.')
       }
 
-      navigate(checkoutResponse.order.consolePath)
       setPayPalSession({
         orderId: checkoutResponse.order.id,
         paypalOrderId: checkoutResponse.paypalOrderId,
@@ -805,6 +881,7 @@ function App() {
         currency: checkoutResponse.order.currency,
       })
     } catch (error) {
+      closeHostedCheckoutWindow()
       trackAnalyticsEvent({
         eventType: 'error',
         eventName: 'checkout_start_failed',
@@ -865,6 +942,12 @@ function App() {
     setPaymentSubmittingOrderId(orderId)
     setConsoleError('')
     setPayPalError('')
+    const hostedCheckoutWindow = openHostedCheckoutPlaceholder()
+    const closeHostedCheckoutWindow = () => {
+      if (hostedCheckoutWindow && !hostedCheckoutWindow.closed) {
+        hostedCheckoutWindow.close()
+      }
+    }
 
     try {
       trackAnalyticsEvent({
@@ -883,6 +966,7 @@ function App() {
       })
       setCheckoutOrder(response.order)
       if (response.order.paymentStatus === 'paid') {
+        closeHostedCheckoutWindow()
         setConsoleFlashMessage(response.message)
         resetPayPalCheckout()
         scheduleConsoleAutoRefresh()
@@ -891,10 +975,11 @@ function App() {
         return
       }
 
-      if (continueWithHostedCheckout(response)) {
+      if (continueWithHostedCheckout(response, { popup: hostedCheckoutWindow })) {
         return
       }
 
+      closeHostedCheckoutWindow()
       if (!response.paypalOrderId || !response.paypalClientId) {
         throw new Error('PayPal checkout is unavailable.')
       }
@@ -916,6 +1001,7 @@ function App() {
         currency: response.order.currency,
       })
     } catch (error) {
+      closeHostedCheckoutWindow()
       trackAnalyticsEvent({
         eventType: 'error',
         eventName: 'checkout_resume_failed',
@@ -1082,12 +1168,20 @@ function App() {
     resetPayPalCheckout()
   }
 
-  const continueWithHostedCheckout = (checkoutResponse: CheckoutSessionResponse) => {
+  const continueWithHostedCheckout = (
+    checkoutResponse: CheckoutSessionResponse,
+    options: {
+      popup?: Window | null
+      stayOnCurrentPage?: boolean
+    } = {},
+  ) => {
+    const { popup = null, stayOnCurrentPage = false } = options
+
     if (!checkoutResponse.checkoutUrl) {
       return false
     }
 
-    const opened = openHostedCheckout(checkoutResponse.checkoutUrl)
+    const opened = openHostedCheckout(checkoutResponse.checkoutUrl, popup)
 
     if (opened) {
       trackAnalyticsEvent({
@@ -1095,13 +1189,22 @@ function App() {
         eventName: 'checkout_redirected',
         orderId: checkoutResponse.order.id,
         metadata: {
-          provider: 'paypal',
+          provider: checkoutResponse.paymentProvider ?? 'paypal',
           mode: 'popup',
         },
       })
-      setConsoleFlashMessage('PayPal checkout opened in a new window. Complete payment there while this page stays on your site.')
-      scheduleConsoleAutoRefresh()
-      navigate(checkoutResponse.order.consolePath)
+      if (stayOnCurrentPage) {
+        setStatusMessage('Secure checkout opened in a new window. Complete payment there, then return here if you still need to review plans.')
+      } else {
+        setConsoleFlashMessage('Secure checkout opened in a new window. Complete payment there while this page stays on your site.')
+        scheduleConsoleAutoRefresh()
+        navigate(checkoutResponse.order.consolePath)
+      }
+      return true
+    }
+
+    if (checkoutResponse.paymentProvider === 'creem') {
+      window.location.assign(checkoutResponse.checkoutUrl)
       return true
     }
 
@@ -1770,10 +1873,43 @@ function App() {
               </div>
             </section>
 
+            <section className="content-section" id="guides" data-analytics-section="guides">
+              <div className="section-heading">
+                <span>Guides</span>
+                <h2>Get oriented before you commit</h2>
+              </div>
+              <div className="marketing-card-grid">
+                {guidePages.map((page) => (
+                  <article className="glass-card marketing-card" key={page.href}>
+                    <span className="marketing-card-label">{page.label}</span>
+                    <h3>{page.title}</h3>
+                    <p>{page.summary}</p>
+                    <ul>
+                      {page.keyPoints.slice(0, 3).map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                    <div className="console-actions-row">
+                      <a
+                        className="secondary-button marketing-link-button"
+                        href={page.href}
+                        onClick={(event) => {
+                          event.preventDefault()
+                          navigate(page.href)
+                        }}
+                      >
+                        Open guide
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
             <section className="content-section" id="compare" data-analytics-section="compare">
               <div className="section-heading">
                 <span>Compare</span>
-                <h2>See when Multica is the better fit than doing it yourself</h2>
+                <h2>See when Multica is the better fit than the tool or workflow you already know</h2>
               </div>
 
               <div className="marketing-card-grid marketing-card-grid-2">
@@ -1905,7 +2041,7 @@ function App() {
                   </article>
 
                   <article className="glass-card marketing-detail-card-wide">
-                    <h3>Facts AI can quote directly</h3>
+                    <h3>What to keep in view</h3>
                     <ul className="marketing-fact-list">
                       {activeSolutionPage.facts.map((item) => (
                         <li key={item}>{item}</li>
@@ -1964,6 +2100,148 @@ function App() {
               <div className="glass-card empty-console-state">
                 <h3>Solution page not found</h3>
                 <p>Choose a workflow from the homepage and start the launch flow there.</p>
+                <div className="console-actions-row">
+                  <button type="button" className="deploy-button" onClick={() => navigate('/')}>
+                    Back to homepage
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
+        ) : null}
+
+        {routeView === 'guide' ? (
+          <section className="content-section page-shell marketing-page-shell" data-analytics-section="guide-page">
+            {activeGuidePage ? (
+              <>
+                <div className="section-heading">
+                  <span>{activeGuidePage.eyebrow}</span>
+                  <h1>{activeGuidePage.title}</h1>
+                </div>
+
+                <article className="glass-card marketing-hero-card">
+                  <p className="marketing-summary">{activeGuidePage.summary}</p>
+                  <div className="console-actions-row marketing-action-row">
+                    <button type="button" className="deploy-button" onClick={() => navigate('/')}>
+                      Start launch flow
+                    </button>
+                    <button type="button" className="secondary-button marketing-inline-button" onClick={() => navigate('/plans')}>
+                      View plans
+                    </button>
+                  </div>
+                </article>
+
+                <article className="glass-card marketing-hero-card marketing-definition-card">
+                  <span className="marketing-card-label">Definition</span>
+                  <p className="marketing-summary">{activeGuidePage.definition}</p>
+                </article>
+
+                <div className="marketing-detail-grid">
+                  <article className="glass-card">
+                    <h3>Best for</h3>
+                    <ul>
+                      {activeGuidePage.bestFor.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </article>
+
+                  <article className="glass-card">
+                    <h3>What to check first</h3>
+                    <ul>
+                      {activeGuidePage.checklist.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </article>
+
+                  <article className="glass-card marketing-detail-card-wide">
+                    <h3>Key points</h3>
+                    <ul className="marketing-fact-list">
+                      {activeGuidePage.keyPoints.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </article>
+
+                  <article className="glass-card marketing-detail-card-wide">
+                    <h3>Watch for</h3>
+                    <ul>
+                      {activeGuidePage.watchFor.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </article>
+                </div>
+
+                <section className="marketing-faq-section" data-analytics-section="guide-resources">
+                  <div className="section-heading section-heading-left compare-subheading">
+                    <span>Resources</span>
+                    <h2>Keep these sources open while you evaluate</h2>
+                  </div>
+                  <div className="faq-grid">
+                    {activeGuidePage.resources.map((resource) => {
+                      const isExternal = /^https?:\/\//.test(resource.href)
+
+                      return (
+                        <article className="glass-card" key={resource.label}>
+                          <h3>
+                            <a
+                              href={resource.href}
+                              className="inline-link"
+                              onClick={(event) => {
+                                if (isExternal) {
+                                  return
+                                }
+
+                                event.preventDefault()
+                                navigate(resource.href)
+                              }}
+                              rel={isExternal ? 'noreferrer' : undefined}
+                              target={isExternal ? '_blank' : undefined}
+                            >
+                              {resource.label}
+                            </a>
+                          </h3>
+                          <p>{resource.description}</p>
+                        </article>
+                      )
+                    })}
+                  </div>
+                </section>
+
+                <section className="marketing-faq-section" data-analytics-section="guide-faq">
+                  <div className="section-heading section-heading-left compare-subheading">
+                    <span>FAQ</span>
+                    <h2>Common questions before you decide</h2>
+                  </div>
+                  <div className="faq-grid">
+                    {activeGuidePage.faqs.map((faq) => (
+                      <article className="glass-card" key={faq.question}>
+                        <h3>{faq.question}</h3>
+                        <p>{faq.answer}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                <article className="glass-card marketing-hero-card marketing-conclusion-card" data-analytics-section="guide-conclusion">
+                  <span className="marketing-card-label">Conclusion</span>
+                  <p className="marketing-summary">{activeGuidePage.conclusion}</p>
+                  <div className="console-actions-row marketing-action-row">
+                    <button type="button" className="deploy-button" onClick={() => navigate('/')}>
+                      Start launch flow
+                    </button>
+                    <button type="button" className="secondary-button marketing-inline-button" onClick={() => navigate('/plans')}>
+                      View plans
+                    </button>
+                  </div>
+                </article>
+              </>
+            ) : (
+              <div className="glass-card empty-console-state">
+                <h3>Guide page not found</h3>
+                <p>Go back to the homepage to open one of the published research guides.</p>
                 <div className="console-actions-row">
                   <button type="button" className="deploy-button" onClick={() => navigate('/')}>
                     Back to homepage
@@ -2080,11 +2358,35 @@ function App() {
           </section>
         ) : null}
 
+        {routeView === 'notFound' ? (
+          <section className="content-section page-shell marketing-page-shell" data-analytics-section="not-found-page">
+            <div className="glass-card marketing-hero-card marketing-conclusion-card">
+              <span className="marketing-card-label">Not found</span>
+              <h1>Page not found</h1>
+              <p className="marketing-summary">
+                This page is not available. Return to the homepage to keep exploring Multica.
+              </p>
+              <div className="console-actions-row marketing-action-row">
+                <button type="button" className="deploy-button" onClick={() => navigate('/')}>
+                  Back to homepage
+                </button>
+              </div>
+            </div>
+          </section>
+        ) : null}
+
         {routeView === 'plans' ? (
           <section className="content-section page-shell plans-page-shell" data-analytics-section="plans-page">
             <div className="section-heading">
               <h2>Pick the plan and launch your Multica today</h2>
             </div>
+
+            {statusMessage ? (
+              <div className="status-banner" role="status" aria-live="polite">
+                <CheckCircle2 size={16} />
+                <span>{statusMessage}</span>
+              </div>
+            ) : null}
 
             <div className="checkout-grid">
               <article className="glass-card checkout-summary-card">
@@ -2112,6 +2414,9 @@ function App() {
                 <div className="console-actions-row">
                   <button type="button" className="deploy-button" onClick={() => void handlePlanLaunch()} disabled={launchSubmitting}>
                     {launchSubmitting ? 'Preparing checkout...' : 'Launch'}
+                  </button>
+                  <button type="button" className="secondary-button" onClick={() => void handlePlanLaunch('nowpayments')} disabled={launchSubmitting}>
+                    Pay with USDC Wallet
                   </button>
                 </div>
               </article>
@@ -2287,7 +2592,9 @@ function App() {
                           const upgradeBadgeLabel = claw
                             ? getUpgradeBadgeLabel(claw.upgradeStatus, claw.upgradeTargetVersion)
                             : null
-                          const deploymentInProgress = isDeploymentInProgress(deploymentStatus)
+                          const deploymentQueued = isDeploymentQueued(deploymentStatus)
+                          const deploymentRunning = isDeploymentRunning(deploymentStatus)
+                          const deploymentInProgress = isDeploymentPending(deploymentStatus)
                           const deploymentFailed = deploymentStatus === 'failed'
                           const redeployState = getRedeployManagementState({
                             id,
@@ -2314,17 +2621,29 @@ function App() {
                             canManageUsers && order.canAdminDeleteMultica && isLatestForOrder && Boolean(claw)
                           const shouldShowDeploymentProgress =
                             Boolean(deployment) && (deploymentInProgress || deploymentFailed)
+                          const shouldShowDeploymentProgressBar = !deploymentQueued
                           const deploymentProgressValue = Math.max(
-                            deploymentInProgress ? 18 : 0,
+                            deploymentRunning ? 18 : 0,
                             Math.min(100, deployment?.progress ?? 0),
                           )
-                          const deploymentProgressLabel = deploymentInProgress
-                            ? `${deployment?.triggerMode === 'manual' ? 'Manual' : 'Automatic'} deployment in progress`
-                            : `${deployment?.triggerMode === 'manual' ? 'Manual' : 'Automatic'} deployment failed`
+                          const deploymentProgressLabel = deploymentQueued
+                            ? 'Queued for provisioning'
+                            : deploymentRunning
+                              ? 'Deployment running'
+                              : `${deployment?.triggerMode === 'manual' ? 'Manual' : 'Automatic'} deployment failed`
                           const deploymentProgressMessage = formatDeploymentMessage(
                             deployment?.lastMessage || order.statusMessage,
                             deploymentStatus,
                           )
+                          const deploymentBadgeLabel = deployment
+                            ? deploymentQueued
+                              ? 'Queued for provisioning'
+                              : deploymentRunning
+                                ? 'Deployment running'
+                                : deployment.triggerMode === 'manual'
+                                  ? 'Manual trigger'
+                                  : 'Automatic trigger'
+                            : null
                           const deploymentSequence = deployment?.sequenceNumber ?? claw?.sequenceNumber ?? 1
                           const rowCreatedAt = claw?.createdAt ?? deployment?.updatedAt ?? order.createdAt
                           const openConsoleDeploymentId = deployment?.id ?? claw?.deploymentId ?? null
@@ -2334,7 +2653,7 @@ function App() {
                             <div className="compact-claw-main">
                               <div className="admin-user-summary">
                                 <strong className="claw-summary-title">
-                                  {deploymentInProgress ? (
+                                  {deploymentRunning ? (
                                     <span className="deploying-claw-indicator" aria-label="Deployment in progress">
                                       <ServerCog size={15} />
                                     </span>
@@ -2345,11 +2664,7 @@ function App() {
                               </div>
                               <div className="compact-claw-meta">
                                 {visibleStatus ? <span className="status-badge">{visibleStatus}</span> : null}
-                                {deployment ? (
-                                  <span className="status-badge">
-                                    {deployment.triggerMode === 'manual' ? 'Manual trigger' : 'Automatic trigger'}
-                                  </span>
-                                ) : null}
+                                {deploymentBadgeLabel ? <span className="status-badge">{deploymentBadgeLabel}</span> : null}
                                 {upgradeBadgeLabel ? <span className="status-badge">{upgradeBadgeLabel}</span> : null}
                                 <span className="status-badge">{formatLifecycleStatus(order.paymentStatus)}</span>
                                 <span className="status-badge">{formatLifecycleStatus(order.bindingStatus)}</span>
@@ -2362,15 +2677,17 @@ function App() {
                                 >
                                   <div className="management-progress-header">
                                     <strong>{deploymentProgressLabel}</strong>
-                                    <span>{deploymentProgressValue}%</span>
+                                    {shouldShowDeploymentProgressBar ? <span>{deploymentProgressValue}%</span> : null}
                                   </div>
                                   <span className="management-progress-copy">{deploymentProgressMessage}</span>
-                                  <div className="deployment-progress-line management-progress-line">
-                                    <div
-                                      className="deployment-progress-bar"
-                                      style={{ width: `${deploymentProgressValue}%` }}
-                                    />
-                                  </div>
+                                  {shouldShowDeploymentProgressBar ? (
+                                    <div className="deployment-progress-line management-progress-line">
+                                      <div
+                                        className="deployment-progress-bar"
+                                        style={{ width: `${deploymentProgressValue}%` }}
+                                      />
+                                    </div>
+                                  ) : null}
                                 </div>
                               ) : null}
                             </div>
@@ -2526,7 +2843,10 @@ function App() {
                               type="button"
                               className="secondary-button orders-create-button"
                               onClick={() => void handleTriggerDeployment(order.id, `orders-ready:${order.id}`)}
-                              disabled={deploymentTriggeringKey === `orders-ready:${order.id}`}
+                              disabled={
+                                deploymentMode === 'manual' ||
+                                deploymentTriggeringKey === `orders-ready:${order.id}`
+                              }
                             >
                               {deploymentTriggeringKey === `orders-ready:${order.id}` ? 'Creating Multica...' : 'Create Multica'}
                             </button>

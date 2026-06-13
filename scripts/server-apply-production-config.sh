@@ -78,7 +78,7 @@ server {
             return 301 https://www.aigeamy.com$request_uri;
         }
 
-        proxy_pass http://127.0.0.1:5173;
+        proxy_pass http://127.0.0.1:5175;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $multica_forwarded_proto;
@@ -127,7 +127,7 @@ server {
             return 301 https://www.aigeamy.com$request_uri;
         }
 
-        proxy_pass http://127.0.0.1:5173;
+        proxy_pass http://127.0.0.1:5175;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto $multica_forwarded_proto;
@@ -159,7 +159,7 @@ server {
     client_max_body_size 10m;
 
     location / {
-        proxy_pass http://127.0.0.1:5173;
+        proxy_pass http://127.0.0.1:5175;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Proto https;
@@ -233,7 +233,7 @@ systemctl reload nginx
 log "Restarting app service"
 systemctl restart "$SERVICE_NAME"
 for attempt in $(seq 1 30); do
-  if curl -fsS http://127.0.0.1:5173/api/runtime >/dev/null; then
+  if curl -fsS http://127.0.0.1:5175/api/runtime >/dev/null; then
     break
   fi
 

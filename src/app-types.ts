@@ -127,7 +127,7 @@ export type ConsoleData = {
 
 export type BillingCycle = 'annual' | 'monthly'
 
-export type RouteView = 'home' | 'plans' | 'console' | 'compare' | 'solution' | 'privacy' | 'terms'
+export type RouteView = 'home' | 'plans' | 'console' | 'compare' | 'solution' | 'guide' | 'privacy' | 'terms' | 'notFound'
 
 export type LaunchDraft = {
   modelId: string
@@ -162,6 +162,7 @@ export type MulticaVersionsResponse = {
 }
 
 export type RuntimeResponse = {
+  deploymentMode: 'automatic' | 'manual'
   environment: 'development' | 'production'
   isDevelopment: boolean
   publicAppOrigin: string
@@ -334,6 +335,28 @@ export type SolutionPage = {
 export type FaqItem = {
   question: string
   answer: ReactNode
+}
+
+export type GuideResourceLink = {
+  label: string
+  href: string
+  description: string
+}
+
+export type GuidePage = {
+  href: string
+  label: string
+  eyebrow: string
+  title: string
+  summary: string
+  definition: string
+  keyPoints: string[]
+  bestFor: string[]
+  checklist: string[]
+  watchFor: string[]
+  resources: GuideResourceLink[]
+  conclusion: string
+  faqs: FaqItem[]
 }
 
 export type ComparisonRow = {
