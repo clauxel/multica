@@ -5,51 +5,51 @@ import { fileURLToPath } from 'node:url'
 const site = {
   "dir": "multica",
   "domain": "multica.uk",
-  "name": "Multica Launch",
+  "name": "Multica Automation Setup",
   "shortName": "Multica",
-  "category": "managed launch and coordination layer for human plus coding-agent teams",
-  "audience": "teams using Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent, and other coding-agent runtimes through Multica-style coordination",
-  "oneLine": "Multica Launch helps teams evaluate, deploy, and operate Multica-style human plus agent teamwork with runtimes, skills, issue flow, and shared console context.",
+  "category": "multi-channel AI automation setup service",
+  "audience": "teams planning Telegram, Discord, WhatsApp, web chat, email, and API-based AI automation with Multica-style coordination",
+  "oneLine": "Multica Automation Setup helps teams plan, launch, and track multi-channel AI automation with a clear channel rollout, pricing path, checkout flow, and console follow-up.",
   "repoName": "multica-uk-docs",
   "upstreamName": "Multica",
   "upstreamRepo": "https://github.com/multica-ai/multica",
-  "pricing": "Plans cover managed launch capacity, deployment guidance, console follow-up, runtime setup, and support for repeat launches.",
+  "pricing": "Plans cover setup audits, multi-channel rollout planning, deployment guidance, console follow-up, runtime setup, and support for repeat automation launches.",
   "ctaPath": "/#pricing",
-  "disclaimer": "Multica Launch is an independent managed-launch service around Multica-style workflows; the official open-source project remains separate.",
+  "disclaimer": "Multica Automation Setup is an independent managed setup service around Multica-style workflows; the official open-source project remains separate.",
   "features": [
     [
-      "Human plus agent coordination",
-      "Keep issues, assignments, agent tasks, progress, and handoff context in one operating layer."
+      "Multi-channel setup map",
+      "Plan the first live channel, later channel expansion, agent tasks, progress, and handoff context in one operating layer."
     ],
     [
-      "Runtime-aware setup",
-      "Plan Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent, or other supported runtime paths before launch."
+      "Runtime-aware automation",
+      "Plan Codex, OpenClaw, OpenCode, Hermes, Gemini, Pi, Cursor Agent, or other supported runtime paths before automation launch."
     ],
     [
-      "Skills and reusable workflows",
-      "Organize repeatable agent skills, task templates, and team procedures instead of starting from scratch each time."
+      "Reusable automation workflows",
+      "Organize repeatable agent skills, task templates, and team procedures instead of rebuilding each channel setup."
     ],
     [
-      "Security-hardened deployment",
-      "Review credentials, daemon setup, runtime boundaries, and account access during managed launch."
+      "Security-aware setup",
+      "Review channel credentials, daemon setup, runtime boundaries, and account access during managed automation rollout."
     ],
     [
-      "Console-first follow-up",
-      "Keep upgrades, additional deployments, and account binding visible after the first launch."
+      "Analytics and console follow-up",
+      "Keep setup intent, checkout, upgrades, additional deployments, and account binding visible after the first launch."
     ],
     [
       "Open-source evaluation path",
-      "Point technical buyers to the upstream repository while explaining the managed-launch value."
+      "Point technical buyers to the upstream repository while explaining the managed automation setup value."
     ]
   ],
   "workflow": [
     [
-      "Define team shape",
-      "List who assigns work, which agents execute it, and which runtimes must be available."
+      "Define channel workflow",
+      "List which channel launches first, which agents execute the work, and which runtimes must be available."
     ],
     [
-      "Choose launch plan",
-      "Pick hosted or self-hosted expectations, deployment capacity, model route, and support level."
+      "Choose setup plan",
+      "Pick hosted or self-hosted expectations, automation capacity, model route, and support level."
     ],
     [
       "Prepare runtime access",

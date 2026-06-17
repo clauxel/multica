@@ -69,6 +69,10 @@ async function fetchJson(url, init = {}) {
   }
 }
 
+function recentIso(offsetSeconds = 0) {
+  return new Date(Date.now() - 60 * 60 * 1000 + offsetSeconds * 1000).toISOString()
+}
+
 test('访客行为追踪支持批量写入、管理员摘要与敏感 URL 脱敏', async () => {
   const tempDir = createTempDirectory('multica-analytics-')
   const configPath = join(tempDir, 'multica.config.json')
@@ -118,8 +122,8 @@ test('访客行为追踪支持批量写入、管理员摘要与敏感 URL 脱敏
             id: 'event-page-view',
             visitorId: 'visitor-123',
             sessionId: 'session-123',
-            sessionStartedAt: '2026-04-03T00:00:00.000Z',
-            occurredAt: '2026-04-03T00:00:01.000Z',
+            sessionStartedAt: recentIso(),
+            occurredAt: recentIso(1),
             eventType: 'page',
             eventName: 'page_view',
             routePath: '/?utm_source=ad&guest_token=secret',
@@ -131,8 +135,8 @@ test('访客行为追踪支持批量写入、管理员摘要与敏感 URL 脱敏
             id: 'event-pricing',
             visitorId: 'visitor-123',
             sessionId: 'session-123',
-            sessionStartedAt: '2026-04-03T00:00:00.000Z',
-            occurredAt: '2026-04-03T00:00:03.000Z',
+            sessionStartedAt: recentIso(),
+            occurredAt: recentIso(3),
             eventType: 'section',
             eventName: 'content_view',
             routePath: '/?utm_source=ad&token=paypal-secret',
@@ -142,8 +146,8 @@ test('访客行为追踪支持批量写入、管理员摘要与敏感 URL 脱敏
             id: 'event-launch',
             visitorId: 'visitor-123',
             sessionId: 'session-123',
-            sessionStartedAt: '2026-04-03T00:00:00.000Z',
-            occurredAt: '2026-04-03T00:00:05.000Z',
+            sessionStartedAt: recentIso(),
+            occurredAt: recentIso(5),
             eventType: 'business',
             eventName: 'launch_clicked',
             routePath: '/',
@@ -152,8 +156,8 @@ test('访客行为追踪支持批量写入、管理员摘要与敏感 URL 脱敏
             id: 'event-checkout',
             visitorId: 'visitor-123',
             sessionId: 'session-123',
-            sessionStartedAt: '2026-04-03T00:00:00.000Z',
-            occurredAt: '2026-04-03T00:00:06.000Z',
+            sessionStartedAt: recentIso(),
+            occurredAt: recentIso(6),
             eventType: 'business',
             eventName: 'checkout_started',
             routePath: '/plans',
@@ -162,8 +166,8 @@ test('访客行为追踪支持批量写入、管理员摘要与敏感 URL 脱敏
             id: 'event-payment',
             visitorId: 'visitor-123',
             sessionId: 'session-123',
-            sessionStartedAt: '2026-04-03T00:00:00.000Z',
-            occurredAt: '2026-04-03T00:00:09.000Z',
+            sessionStartedAt: recentIso(),
+            occurredAt: recentIso(9),
             eventType: 'business',
             eventName: 'payment_completed',
             routePath: '/checkout?PayerID=hidden',

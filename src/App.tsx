@@ -723,6 +723,8 @@ function App() {
       metadata: {
         modelId: selectedModel.id,
         channelId: selectedChannel?.id ?? 'selected_on_plans',
+        offerType: 'multi_channel_ai_automation_setup',
+        intent: 'setup_plan_started',
       },
     })
     persistLaunchDraft({
@@ -774,6 +776,7 @@ function App() {
       metadata: {
         planId,
         billingCycle,
+        offerType: 'multi_channel_ai_automation_setup',
       },
     })
     setSelectedPlanId(planId)
@@ -810,6 +813,7 @@ function App() {
             billingCycle,
             paymentProvider: 'nowpayments',
             popupMode: opened ? 'popup' : 'redirect',
+            offerType: 'multi_channel_ai_automation_setup',
           },
         })
         if (opened) {
@@ -828,6 +832,7 @@ function App() {
         metadata: {
           planId: launchResponse.order.planId,
           billingCycle,
+          offerType: 'multi_channel_ai_automation_setup',
         },
       })
       setCheckoutOrder(launchResponse.order)
@@ -842,6 +847,8 @@ function App() {
         orderId: checkoutResponse.order.id,
         metadata: {
           paymentStatus: checkoutResponse.order.paymentStatus,
+          paymentProvider: checkoutResponse.paymentProvider ?? 'paypal',
+          offerType: 'multi_channel_ai_automation_setup',
         },
       })
       setCheckoutOrder(checkoutResponse.order)
@@ -1743,17 +1750,16 @@ function App() {
           <>
             <section className="hero-section" data-analytics-section="hero">
               <div className="hero-copy">
-                <h1>Multica - Multi-Agent Collaboration for Real Workflows</h1>
+                <h1>Multica - Multi-Channel AI Automation Setup</h1>
                 <p>
-                  <strong>Multica gives you one place to run, compare, and coordinate multiple AI agents in parallel.</strong>{' '}
-                  Instead of isolated sessions and one-off prompts, you can <strong>launch multiple agents side by side</strong>,
-                  review their outputs, and turn parallel AI execution into an organized workflow. That means <strong>faster iteration</strong>,{' '}
-                  <strong>clearer control</strong>, and a <strong>repeatable way to make multi-agent collaboration useful in real production work</strong>.
+                  <strong>Multica helps teams set up multi-channel AI automation that can actually launch.</strong>{' '}
+                  Instead of isolated demos and one-off prompts, you can choose the first live channel, map the rollout across Telegram,
+                  Discord, WhatsApp, or customer chat, and track setup intent, pricing, checkout, and console follow-up in one workflow.
                 </p>
               </div>
               <section className="launch-panel" aria-label="Launch builder" data-analytics-section="launch-builder">
                 <div className="panel-block">
-                  <p className="panel-label">Choose an AI engine for your agent</p>
+                  <p className="panel-label">Choose an AI engine for your automation setup</p>
                   <div className="option-grid option-grid-3">
                     {featuredModels.map((option) => {
                       const active = option.id === selectedModelId
@@ -1808,8 +1814,9 @@ function App() {
                       className="deploy-button"
                       onClick={() => void handleDeploy()}
                       disabled={launchSubmitting}
+                      data-analytics-click="start-automation-setup"
                     >
-                      {launchSubmitting ? 'Loading plans...' : 'Launch Agent'}
+                      {launchSubmitting ? 'Loading setup plans...' : 'Start Setup'}
                     </button>
                   </div>
                 </div>
@@ -1828,7 +1835,7 @@ function App() {
             <section className="content-section" id="features" data-analytics-section="features">
               <div className="section-heading">
                 <span>Features</span>
-                <h2>Built for a fast, current, and security-hardened Multica launch path</h2>
+                <h2>Built for a measurable multi-channel AI automation setup path</h2>
               </div>
               <div className="feature-grid">
                 {features.map((feature) => (
@@ -1843,7 +1850,7 @@ function App() {
             <section className="content-section" id="solutions" data-analytics-section="solutions">
               <div className="section-heading">
                 <span>Solutions</span>
-                <h2>Start from the workflow you already need to launch</h2>
+                <h2>Start from the channel workflow you need to automate</h2>
               </div>
               <div className="marketing-card-grid">
                 {solutionPages.map((page) => (
@@ -1943,7 +1950,7 @@ function App() {
             <section className="content-section" id="pricing" data-analytics-section="pricing">
               <div className="section-heading">
                 <span>Pricing</span>
-                <h2>Production-ready launch plans</h2>
+                <h2>Multi-channel AI automation setup plans</h2>
               </div>
               <div className="pricing-grid">
                 {plans.map((plan) => (
@@ -1960,6 +1967,7 @@ function App() {
                     <button
                       type="button"
                       className="secondary-button"
+                      data-analytics-click={`choose-${plan.id}-setup-plan`}
                       onClick={() => {
                         setSelectedPlanId(plan.id)
                         if (hasLaunchDraft) {
@@ -2378,7 +2386,7 @@ function App() {
         {routeView === 'plans' ? (
           <section className="content-section page-shell plans-page-shell" data-analytics-section="plans-page">
             <div className="section-heading">
-              <h2>Pick the plan and launch your Multica today</h2>
+              <h2>Pick the setup plan and launch your multi-channel automation path</h2>
             </div>
 
             {statusMessage ? (
@@ -2412,10 +2420,22 @@ function App() {
                   </div>
                 </div>
                 <div className="console-actions-row">
-                  <button type="button" className="deploy-button" onClick={() => void handlePlanLaunch()} disabled={launchSubmitting}>
-                    {launchSubmitting ? 'Preparing checkout...' : 'Launch'}
+                  <button
+                    type="button"
+                    className="deploy-button"
+                    onClick={() => void handlePlanLaunch()}
+                    disabled={launchSubmitting}
+                    data-analytics-click="start-setup-checkout"
+                  >
+                    {launchSubmitting ? 'Preparing checkout...' : 'Start setup checkout'}
                   </button>
-                  <button type="button" className="secondary-button" onClick={() => void handlePlanLaunch('nowpayments')} disabled={launchSubmitting}>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => void handlePlanLaunch('nowpayments')}
+                    disabled={launchSubmitting}
+                    data-analytics-click="start-usdc-setup-checkout"
+                  >
                     Pay with USDC Wallet
                   </button>
                 </div>
@@ -2423,7 +2443,7 @@ function App() {
 
               <article className="glass-card checkout-progress-card">
                 <div className="subsection-heading">
-                  <h3>Available packages</h3>
+                  <h3>Available setup packages</h3>
                 </div>
                 <div className="billing-toggle-header">
                   <div className="billing-toggle-row">

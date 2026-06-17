@@ -1,6 +1,6 @@
-const defaultSiteTitle = 'Multica - Multi-Agent Collaboration for Real Workflows'
+const defaultSiteTitle = 'Multica - Multi-Channel AI Automation Setup'
 const defaultSiteDescription =
-  'Multica gives you one place to run, compare, and coordinate multiple AI agents in parallel across real workflows.'
+  'Multica helps teams plan, launch, and track multi-channel AI automation across Telegram, Discord, WhatsApp, and customer workflows.'
 
 export const siteIdentity = {
   name: 'Multica',
@@ -25,12 +25,12 @@ const publicRouteDefinitions = [
       title: defaultSiteTitle,
       summary: [
         defaultSiteDescription,
-        'Launch multiple AI agents side by side, review their outputs, and turn parallel execution into an organized workflow.',
+        'Start with a setup audit, choose the first live channel, and turn multi-agent execution into an automation path the team can repeat.',
       ],
       highlights: [
-        'Run several agents in parallel',
-        'Compare outputs without losing context',
-        'Keep execution inside a shared workflow',
+        'Plan Telegram, Discord, and WhatsApp automation',
+        'Track landing, pricing, setup intent, and checkout stages',
+        'Keep rollout steps inside a shared workflow',
       ],
     },
   },
@@ -552,11 +552,32 @@ function buildHomeStructuredData(origin, canonicalUrl, ogImageUrl, supportEmail)
       operatingSystem: 'Web',
       description: siteIdentity.defaultDescription,
       image: ogImageUrl,
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'USD',
-      },
+      offers: [
+        {
+          '@type': 'Offer',
+          name: 'Setup Audit',
+          price: '9',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: buildCanonicalUrl(origin, '/plans'),
+        },
+        {
+          '@type': 'Offer',
+          name: 'Automation Setup',
+          price: '29',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: buildCanonicalUrl(origin, '/plans'),
+        },
+        {
+          '@type': 'Offer',
+          name: 'Managed Rollout',
+          price: '79',
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: buildCanonicalUrl(origin, '/plans'),
+        },
+      ],
       provider: {
         '@type': 'Organization',
         name: siteIdentity.name,

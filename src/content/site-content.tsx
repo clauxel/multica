@@ -262,38 +262,38 @@ export const channelBadges = ['Slack', 'LINE', 'Messenger', 'Web chat', 'Email',
 
 export const features: Feature[] = [
   {
-    title: 'Launch without server setup',
-    description: 'Skip the infrastructure setup pass entirely and go straight into a guided Multica agent deployment flow.',
+    title: 'Automation setup before tooling',
+    description: 'Turn a channel automation idea into a clear setup path before the team spends time wiring servers, tokens, and follow-up work.',
   },
   {
-    title: 'Automatic runtime updates',
+    title: 'Channel-ready rollout map',
     description: (
       <>
-        Keep each Multica agent current with <strong>automatic runtime updates</strong> and
-        no manual patching so teams stay on the latest release path.
+        Map Telegram, Discord, WhatsApp, and later channels into one <strong>multi-channel AI automation setup</strong>
+        so every rollout has a first channel, support path, and repeat-launch plan.
       </>
     ),
   },
   {
-    title: 'Security-hardened deployment',
+    title: 'Security-aware deployment notes',
     description: (
       <>
-        Launch a <strong>security-hardened Multica agent</strong> with safer defaults and a
-        deployment path built to reduce avoidable exposure from the start.
+        Capture token handling, channel permissions, and deployment boundaries before launch so automation does not create
+        avoidable operational exposure.
       </>
     ),
   },
   {
-    title: 'Model first configuration',
-    description: 'Choose the default intelligence layer before launch so each Multica agent starts with the right baseline.',
+    title: 'Model and channel pairing',
+    description: 'Choose the default intelligence layer and the first live channel together so each setup starts with a realistic operating baseline.',
   },
   {
-    title: 'True multi-channel reach',
-    description: 'Connect one agent to Telegram, Discord, and WhatsApp simultaneously — reach every audience without rebuilding your setup.',
+    title: 'True multi-channel automation',
+    description: 'Plan one automation that can expand across Telegram, Discord, WhatsApp, and customer chat without rebuilding the setup from scratch.',
   },
   {
-    title: 'Console-first follow-up',
-    description: 'Keep upgrades, extra deployments, and account binding in one operational control surface.',
+    title: 'Analytics and console follow-up',
+    description: 'Track landing, pricing, setup intent, checkout, and console stages so the site can improve based on real buyer behavior.',
   },
 ]
 
@@ -303,17 +303,17 @@ export const faqs: FaqItem[] = [
   {
     question: 'Do I need my own server before I start?',
     answer:
-      'Not to begin the launch flow. Multica is designed for teams that want a faster first deployment without doing the full server setup by hand. If your process requires full infrastructure ownership from day one, the self-hosted path may still be the better fit.',
+      'Not to begin the setup flow. Multica is designed for teams that want to plan and start multi-channel AI automation without doing the full server setup by hand. If your process requires full infrastructure ownership from day one, the self-hosted path may still be the better fit.',
   },
   {
     question: 'What happens after payment?',
     answer:
-      'After successful payment, you go straight to the console to track deployment and follow-up actions. The flow is designed to move you from plan choice into deployment tracking, not into a separate manual handoff.',
+      'After successful payment, you go straight to the console to track setup, deployment, and follow-up actions. The flow is designed to move you from plan choice into an operational automation path, not into a vague manual handoff.',
   },
   {
     question: 'Who should use Multica instead of self-hosting?',
     answer:
-      'Use Multica when speed to first launch, multi-channel reach, and simpler follow-up operations matter more than full infrastructure control. If your team needs to customize every dependency, server policy, and upgrade step, the self-hosted path may still be a better match.',
+      'Use Multica when speed to first channel, multi-channel automation setup, and simpler follow-up operations matter more than full infrastructure control. If your team needs to customize every dependency, server policy, and upgrade step, the self-hosted path may still be a better match.',
   },
   {
     question: 'Which channels are supported in the launch flow?',
@@ -323,7 +323,7 @@ export const faqs: FaqItem[] = [
   {
     question: 'What makes Multica different from a single-channel bot?',
     answer:
-      'Multica is built for multi-channel deployment from the ground up. One agent configuration can serve Telegram, Discord, and WhatsApp simultaneously through a single managed deployment, without duplicating your setup for each channel.',
+      'Multica is built around multi-channel automation setup from the ground up. One agent configuration can expand across Telegram, Discord, and WhatsApp through a single managed setup path, without duplicating planning and deployment work for each channel.',
   },
   {
     question: 'How can I contact support before I buy?',
@@ -586,7 +586,7 @@ export const guidePages: GuidePage[] = [
     keyPoints: [
       'Open source does not mean zero operational cost; self-hosting still means infrastructure, setup, and maintenance.',
       'The official site points to a free trial, download flow, and cloud runtime waitlist, which is different from a public flat pricing table.',
-      'On this site, Starter is $9/month for 1 Multica instance, Growth is $29/month for 5, and Scale is $79/month for 20.',
+      'On this site, Setup Audit is $9/month for one readiness review, Automation Setup is $29/month for a first multi-channel rollout, and Managed Rollout is $79/month for teams scaling channel automation.',
       'A useful pricing conversation should also include runtime, model, token, and maintenance costs instead of only the sticker price.',
     ],
     bestFor: [
@@ -638,7 +638,7 @@ export const guidePages: GuidePage[] = [
       {
         question: 'What do the plan prices on this site represent?',
         answer:
-          'They represent managed launch plans tied to deployment capacity. They are useful if you want a faster path to getting Multica live, but they are not the same thing as the total cost of long-term self-hosting or model usage.',
+      'They represent managed setup plans tied to automation rollout capacity. They are useful if you want a faster path to getting multi-channel automation live, but they are not the same thing as the total cost of long-term self-hosting or model usage.',
       },
       {
         question: 'What extra costs should I remember?',

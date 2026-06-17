@@ -1,11 +1,11 @@
 # Multica
 
-Updated: 2026-06-12
+Updated: 2026-06-17
 Canonical: https://multica.uk/
 Support: support@aigeamy.com
 
 ## Summary
-Multica is a Multi-agent deployment workspace for teams coordinating Telegram and multi-channel AI agents. It helps users get a clearer launch path for multi-agent channels, pricing, checkout, and operational handoff.
+Multica is a multi-channel AI automation setup service for teams that need a practical path from channel choice to launch, checkout, deployment tracking, and follow-up. It helps teams plan Telegram, Discord, WhatsApp, and customer-chat automation without turning each channel into a separate setup project.
 
 ## Core pages
 - Home: https://multica.uk/
@@ -19,7 +19,35 @@ Multica is a Multi-agent deployment workspace for teams coordinating Telegram an
 - multi ca: https://multica.uk/multi-ca-agent-workspace/ - Multi CA Agent Workspace Guide
 
 ## Pricing anchors
-- Starter: $19/mo public planning anchor
-- Growth: $49/mo public planning anchor
-- Scale: $149/mo public planning anchor
+- Setup Audit: $9/mo public setup audit anchor
+- Automation Setup: $29/mo first multi-channel rollout anchor
+- Managed Rollout: $79/mo governed rollout anchor
 
+<!-- SAAS_NAV_START -->
+# Multica Automation Setup navigation reference
+
+Multica Automation Setup helps teams plan, launch, and track multi-channel AI automation with a clear channel rollout, pricing path, checkout flow, and console follow-up.
+
+Canonical domain: https://multica.uk/
+Category: multi-channel AI automation setup service
+Audience: teams planning Telegram, Discord, WhatsApp, web chat, email, and API-based AI automation with Multica-style coordination
+Pricing: Plans cover setup audits, multi-channel rollout planning, deployment guidance, console follow-up, runtime setup, and support for repeat automation launches.
+Support: support@aigeamy.com
+Docs repository: https://github.com/clauxel/multica-uk-docs
+Upstream source context: Multica - https://github.com/multica-ai/multica
+
+Public navigation pages:
+- Features: https://multica.uk/features/
+- How It Works: https://multica.uk/how-it-works/
+- Use Cases: https://multica.uk/use-cases/
+- Guides: https://multica.uk/guides/
+- Docs: https://multica.uk/docs/
+- GitHub: https://multica.uk/github/
+- Pricing: https://multica.uk/#pricing/
+
+Important limits:
+- Runtime behavior depends on third-party CLIs, model providers, and local environment setup.
+- Teams remain responsible for reviewing code and actions produced by agents.
+- Managed launch does not replace internal security, access, or deployment policy.
+- Multica Automation Setup is an independent managed setup service around Multica-style workflows; the official open-source project remains separate.
+<!-- SAAS_NAV_END -->
