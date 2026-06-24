@@ -321,26 +321,26 @@ const serverSeoPageMap = new Map([
     },
   ],
 ])
-const creemEnvironmentSetting = (process.env.CREEM_ENV ?? process.env.CREEM_MODE ?? '').trim().toLowerCase()
-const creemTestApiKey = process.env.API_TEST_KEY ?? process.env.CREEM_TEST_KEY ?? process.env.creem_test_key ?? ''
-const creemLiveApiKey = process.env.API_PROD_KEY ?? process.env.CREEM_API_KEY ?? process.env.CREEM_KEY ?? ''
-const creemIsTestMode =
-  creemEnvironmentSetting === 'test'
+const polarEnvironmentSetting = (process.env.POLAR_ENV ?? process.env.POLAR_MODE ?? '').trim().toLowerCase()
+const polarTestApiKey = process.env.API_TEST_KEY ?? process.env.POLAR_TEST_KEY ?? process.env.polar_test_key ?? ''
+const polarLiveApiKey = process.env.API_PROD_KEY ?? process.env.POLAR_API_KEY ?? process.env.POLAR_KEY ?? ''
+const polarIsTestMode =
+  polarEnvironmentSetting === 'test'
     ? true
-    : creemEnvironmentSetting === 'live' || creemEnvironmentSetting === 'production'
+    : polarEnvironmentSetting === 'live' || polarEnvironmentSetting === 'production'
       ? false
-      : !isProduction && Boolean(creemTestApiKey)
-const creemApiKey = creemIsTestMode ? creemTestApiKey : creemLiveApiKey || (!isProduction ? creemTestApiKey : '')
-const creemBaseUrl =
-  process.env.CREEM_BASE_URL ?? (creemIsTestMode ? 'https://test-api.creem.io' : 'https://api.creem.io')
+      : !isProduction && Boolean(polarTestApiKey)
+const polarApiKey = polarIsTestMode ? polarTestApiKey : polarLiveApiKey || (!isProduction ? polarTestApiKey : '')
+const polarBaseUrl =
+  process.env.POLAR_BASE_URL ?? (polarIsTestMode ? 'https://test-api.polar.sh' : 'https://api.polar.sh')
 const paymentProviderSetting = (process.env.PAYMENT_PROVIDER ?? '').trim().toLowerCase()
 const paymentProvider =
   paymentProviderSetting === 'paypal'
     ? 'paypal'
-    : paymentProviderSetting === 'creem'
-      ? 'creem'
-      : creemApiKey
-        ? 'creem'
+    : paymentProviderSetting === 'polar'
+      ? 'polar'
+      : polarApiKey
+        ? 'polar'
         : 'paypal'
 
 await initializeAppDatabase(database)
@@ -621,7 +621,7 @@ const createOrderStatement = database.prepare(`
     included_deployments,
     created_at,
     updated_at,
-    creem_checkout_id,
+    polar_checkout_id,
     paypal_order_id,
     paid_at
   )
@@ -636,7 +636,7 @@ const updateOrderPaymentStatement = database.prepare(`
 
 const updateOrderCheckoutStatement = database.prepare(`
   UPDATE orders
-  SET creem_checkout_id = ?, updated_at = ?
+  SET polar_checkout_id = ?, updated_at = ?
   WHERE id = ?
 `)
 
@@ -923,14 +923,14 @@ const deleteDeploymentByIdStatement = database.prepare(`
   WHERE id = ?
 `)
 
-const findCreemProductStatement = database.prepare(`
+const findPolarProductStatement = database.prepare(`
   SELECT *
-  FROM creem_products
+  FROM polar_products
   WHERE lookup_key = ?
 `)
 
-const upsertCreemProductStatement = database.prepare(`
-  INSERT INTO creem_products (lookup_key, product_id, amount_cents, currency, created_at, updated_at)
+const upsertPolarProductStatement = database.prepare(`
+  INSERT INTO polar_products (lookup_key, product_id, amount_cents, currency, created_at, updated_at)
   VALUES (?, ?, ?, ?, ?, ?)
   ON CONFLICT(lookup_key) DO UPDATE SET
     product_id = excluded.product_id,
@@ -3073,9 +3073,9 @@ const { enforceRateLimit, readJsonBody, readTextBody, sendJson } = createHttpHel
 const {
   applyCorsHeaders,
   applySecurityHeaders,
-  canUseCreemHostedReturnUrl,
+  canUsePolarHostedReturnUrl,
   getConfiguredAppOrigins,
-  getCreemReturnOrigin,
+  getPolarReturnOrigin,
   getPublicAppOrigin,
   verifyOrigin,
 } = createSecurityHelpers({
@@ -3086,30 +3086,30 @@ const {
 
 const {
   capturePayPalOrder,
-  createCreemCheckoutForOrder,
+  createPolarCheckoutForOrder,
   createPayPalOrderForOrder,
-  getCreemCheckoutId,
-  getCreemCheckoutSession,
-  getCreemCheckoutUrl,
-  getCreemWebhookEventType,
-  getCreemWebhookOrderId,
+  getPolarCheckoutId,
+  getPolarCheckoutSession,
+  getPolarCheckoutUrl,
+  getPolarWebhookEventType,
+  getPolarWebhookOrderId,
   getPayPalCheckoutUrl,
   handlePayPalWebhook,
   reconcileOrderPayment,
-  verifyCreemRedirectSignature,
-  verifyCreemWebhookSignature,
+  verifyPolarRedirectSignature,
+  verifyPolarWebhookSignature,
   verifyPayPalWebhookSignature,
 } = createPaymentHelpers({
-  canUseCreemHostedReturnUrl,
-  creemApiKey,
-  creemBaseUrl,
-  creemIsTestMode,
-  findCreemProductStatement,
+  canUsePolarHostedReturnUrl,
+  polarApiKey,
+  polarBaseUrl,
+  polarIsTestMode,
+  findPolarProductStatement,
   findOrderByIdStatement,
   findOrderByPayPalOrderIdStatement,
   findUserByIdStatement,
   formatMoney,
-  getCreemReturnOrigin,
+  getPolarReturnOrigin,
   getPublicAppOrigin,
   guestUserEmail,
   HttpError,
@@ -3125,7 +3125,7 @@ const {
   resolvePlanSelection,
   setOrderCheckoutId,
   setOrderPayPalOrderId,
-  upsertCreemProductStatement,
+  upsertPolarProductStatement,
 })
 
 const {
@@ -3200,7 +3200,7 @@ const apiRouter = createApiRouter({
   countRemainingAdminsStatement,
   countUsersStatement,
   createDeploymentForOrder,
-  createCreemCheckoutForOrder,
+  createPolarCheckoutForOrder,
   createOrderStatement,
   createPayPalOrderForOrder,
   createSessionForUser,
@@ -3224,11 +3224,11 @@ const apiRouter = createApiRouter({
   getChannelById,
   getAgentMulticaVersion,
   getConfiguredUserRole,
-  getCreemCheckoutId,
-  getCreemCheckoutSession,
-  getCreemCheckoutUrl,
-  getCreemWebhookEventType,
-  getCreemWebhookOrderId,
+  getPolarCheckoutId,
+  getPolarCheckoutSession,
+  getPolarCheckoutUrl,
+  getPolarWebhookEventType,
+  getPolarWebhookOrderId,
   getDeploymentConsoleToken,
   getDeploymentRuntimeConfig,
   getPaidOrderTriggerMode,
@@ -3280,8 +3280,8 @@ const apiRouter = createApiRouter({
   upgradeMulticaInstance,
   validateCommunicationToken,
   validateName,
-  verifyCreemRedirectSignature,
-  verifyCreemWebhookSignature,
+  verifyPolarRedirectSignature,
+  verifyPolarWebhookSignature,
   verifyOrigin,
   verifyPassword,
   verifyPayPalWebhookSignature,

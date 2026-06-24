@@ -49,7 +49,7 @@ async function listen(server) {
   return `http://127.0.0.1:${address.port}`
 }
 
-async function startMockCreemServer() {
+async function startMockPolarServer() {
   const requests = []
   let productSequence = 1
   let checkoutSequence = 1
@@ -66,16 +66,16 @@ async function startMockCreemServer() {
 
     if (request.method === 'POST' && url.pathname === '/v1/products') {
       sendJson(response, 200, {
-        id: `CREEM-PRODUCT-${productSequence++}`,
+        id: `POLAR-PRODUCT-${productSequence++}`,
       })
       return
     }
 
     if (request.method === 'POST' && url.pathname === '/v1/checkouts') {
-      const id = `CREEM-CHECKOUT-${checkoutSequence++}`
+      const id = `POLAR-CHECKOUT-${checkoutSequence++}`
       sendJson(response, 200, {
         id,
-        checkout_url: `https://checkout.creem.test/session/${id}`,
+        checkout_url: `https://checkout.polar.test/session/${id}`,
       })
       return
     }
@@ -124,9 +124,9 @@ async function fetchJson(url, init = {}) {
   return payload
 }
 
-test('Vercel serverless handler can create a launch order and Creem hosted checkout session', async () => {
+test('Vercel serverless handler can create a launch order and Polar hosted checkout session', async () => {
   const environmentSnapshot = snapshotEnvironment()
-  const creem = await startMockCreemServer()
+  const polar = await startMockPolarServer()
   const memoryId = `vercel-checkout-${Date.now()}-${Math.random().toString(16).slice(2)}`
 
   Object.assign(process.env, {
@@ -138,10 +138,10 @@ test('Vercel serverless handler can create a launch order and Creem hosted check
     MULTICA_DEPLOYMENT_MODE: 'manual',
     MULTICA_TOKEN_SECRET: 'vercel-checkout-test-secret',
     APP_ORIGIN: 'https://multica.example.test',
-    PAYMENT_PROVIDER: 'creem',
-    CREEM_ENV: 'test',
-    API_TEST_KEY: 'mock-creem-test-key',
-    CREEM_BASE_URL: creem.baseUrl,
+    PAYMENT_PROVIDER: 'polar',
+    POLAR_ENV: 'test',
+    API_TEST_KEY: 'mock-polar-test-key',
+    POLAR_BASE_URL: polar.baseUrl,
   })
 
   const apiServer = await startServerlessApiServer()
@@ -173,27 +173,27 @@ test('Vercel serverless handler can create a launch order and Creem hosted check
       },
     })
 
-    assert.equal(checkout.paymentProvider, 'creem')
-    assert.equal(checkout.creemCheckoutId, 'CREEM-CHECKOUT-1')
-    assert.equal(checkout.checkoutUrl, 'https://checkout.creem.test/session/CREEM-CHECKOUT-1')
+    assert.equal(checkout.paymentProvider, 'polar')
+    assert.equal(checkout.polarCheckoutId, 'POLAR-CHECKOUT-1')
+    assert.equal(checkout.checkoutUrl, 'https://checkout.polar.test/session/POLAR-CHECKOUT-1')
     assert.equal(checkout.paypalOrderId, null)
     assert.equal(checkout.paypalClientId, null)
     assert.equal(checkout.order.amountCents, launch.order.amountCents)
-    assert.equal(Object.values(checkout).some((value) => String(value).includes('mock-creem-test-key')), false)
+    assert.equal(Object.values(checkout).some((value) => String(value).includes('mock-polar-test-key')), false)
 
-    const productRequest = creem.requests.find((request) => request.method === 'POST' && request.pathname === '/v1/products')
-    const checkoutRequest = creem.requests.find((request) => request.method === 'POST' && request.pathname === '/v1/checkouts')
+    const productRequest = polar.requests.find((request) => request.method === 'POST' && request.pathname === '/v1/products')
+    const checkoutRequest = polar.requests.find((request) => request.method === 'POST' && request.pathname === '/v1/checkouts')
 
-    assert.equal(productRequest?.headers['x-api-key'], 'mock-creem-test-key')
+    assert.equal(productRequest?.headers['x-api-key'], 'mock-polar-test-key')
     assert.equal(productRequest?.body.price, launch.order.amountCents)
     assert.equal(productRequest?.body.currency, 'USD')
-    assert.equal(checkoutRequest?.headers['x-api-key'], 'mock-creem-test-key')
+    assert.equal(checkoutRequest?.headers['x-api-key'], 'mock-polar-test-key')
     assert.equal(checkoutRequest?.body.request_id, launch.order.id)
     assert.ok(checkoutRequest?.body.success_url.startsWith(`https://multica.example.test/console?order=${launch.order.id}`))
     assert.equal(checkoutRequest?.body.metadata.orderId, launch.order.id)
   } finally {
     await apiServer.stop()
-    await creem.stop()
+    await polar.stop()
     restoreEnvironment(environmentSnapshot)
   }
 })
